@@ -1,0 +1,67 @@
+{% extends 'baseposts.html' %}
+
+{% block title %}
+<title>Authors</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="panel panel-default user_panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">List of authors</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-container">
+                    <table class="table-users table" border="0">
+                        <tbody>
+                            {% for author in pagination.items %}
+                            <tr>
+                                <td width="10">
+                                    <img class="rounded-circle" width="50"
+                                        src="{{ url_for('static', filename='images/profileimages/' + author.picture) }}" />
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('getprofile', username=author.username) }}">{% if author.name
+                                        %}{{ author.name }}{% else %}{{ author.username }}{% endif %}</a><br><i
+                                        class="fa fa-envelope"></i>
+                                </td>
+                                <td>
+                                    Articles<br><small class="text-muted">{{ author.articles|length }}</small>
+                                </td>
+                                <td>
+                                    News<br><small class="text-muted">{{ author.news|length }}</small>
+                                </td>
+                                <td align="center">
+                                    Date of registration: {{ author.date }}<br><small class="text-muted"></small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <nav>
+        <ul class="pagination">
+            {% if pagination.has_prev %}<li class="page-item"><a class="page-link"
+                    href="{{ url_for('showauthors', page=pagination.prev_num) }}">Previous</a></li>{% endif %}
+            {% for page in pagination.iter_pages() %}
+            {% if page %}
+            {% if page != pagination.page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('showauthors', page=page) }}">{{ page }}</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="">{{ page }}</a></li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}<li class="page-item"><a class="page-link"
+                    href="{{ url_for('showauthors', page=pagination.next_num) }}">Next</a></li>{% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

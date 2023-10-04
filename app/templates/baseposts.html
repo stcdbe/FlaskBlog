@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+{% block navbar %}
+<form method="get" action="{{ url_for('search') }}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+  <input type="text" class="form-control form-control-dark text-bg-white" placeholder="Search..." name="q">
+</form>
+{% if current_user.is_authenticated %}
+<div class="text-end">
+  <form action="{{ url_for('getprofile', username=current_user.username) }}">
+    <button type="submit" class="btn btn-primary active">My profile</button>
+  </form>
+</div>
+{% else %}
+<div class="text-end">
+  <form action="{{ url_for('signin') }}">
+    <button type="submit" class="btn btn-outline-light me-2">Login</button>
+  </form>
+</div>
+<div class="text-end">
+  <form action="{{ url_for('registration') }}">
+    <button type="submit" class="btn btn-primary active">Sign-up</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block category %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
