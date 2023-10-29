@@ -8,10 +8,10 @@ from app import db
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4)
-    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    username: db.Mapped[str] = db.mapped_column(db.String, unique=True)
-    email: db.Mapped[str] = db.mapped_column(db.String, unique=True)
+    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
+    username: db.Mapped[str] = db.mapped_column(db.String, unique=True, index=True)
+    email: db.Mapped[str] = db.mapped_column(db.String, unique=True, index=True)
     password: db.Mapped[str]
     date: db.Mapped[date] = db.mapped_column(db.Date, default=date.today())
     picture: db.Mapped[str] = db.mapped_column(db.String, default='default.jpg')
@@ -33,9 +33,9 @@ class User(db.Model, UserMixin):
 
 class News(db.Model):
     __tablename__ = 'news'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4)
-    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    title: db.Mapped[str]
+    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
+    title: db.Mapped[str] = db.mapped_column(index=True)
     text: db.Mapped[str] = db.mapped_column(db.Text)
     picture: db.Mapped[str]
     username: db.Mapped[str] = db.mapped_column(db.ForeignKey('user.username'))
@@ -49,9 +49,9 @@ class News(db.Model):
 
 class Article(db.Model):
     __tablename__ = 'article'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4)
-    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    title: db.Mapped[str]
+    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
+    title: db.Mapped[str] = db.mapped_column(index=True)
     intro: db.Mapped[str] = db.mapped_column(db.Text, nullable=True)
     text: db.Mapped[str] = db.mapped_column(db.Text)
     picture: db.Mapped[str]
@@ -67,8 +67,8 @@ class Article(db.Model):
 
 class ArticleComment(db.Model):
     __tablename__ = 'comment'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4)
-    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
     articleid: db.Mapped[str] = db.mapped_column(db.ForeignKey('article.id'))
     article: db.Mapped[list['Article']] = db.relationship(back_populates='comments')
     username: db.Mapped[str] = db.mapped_column(db.ForeignKey('user.username'))
