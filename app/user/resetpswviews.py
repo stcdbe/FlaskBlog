@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash
 from app import app
 from app.user.verifywtforms import ForgotPasswordForm, ResetPasswordForm
 from app.utils import sendemail
-from app.database.dbfuncs import getuser, getuserbyid, adduserdata
+from app.database.dbfuncs import getuser, getuserbyid, upduserdata
 
 
 @app.route('/forgotpassword', methods=['GET', 'POST'])
@@ -42,17 +42,6 @@ def resetpassword(token: str) -> str | Response:
     try:
         userid = decode_token(encoded_token=token)['sub']
         user = getuserbyid(id=userid)
-        form = ResetPasswordForm()
-        if form.validate_on_submit():
-            hashedpsw = generate_password_hash(password=form.password.data, method='pbkdf2:sha512')
-            adduserdata(user=user, data=dict(password=hashedpsw))
-            sendemail(subject='(Flask Blog) Your password was reset',
-                      user=user,
-                      url=request.host_url + 'forgotpassword',
-                      template='infopswemail.html')
-            flash('The new password has been confirmed.', 'primary')
-            return redirect(url_for('signin'))
-        return render_template('verification/newpassword.html', form=form, token=token)
 
     except ExpiredSignatureError:
         flash('Expired token.', 'danger')
@@ -61,3 +50,16 @@ def resetpassword(token: str) -> str | Response:
     except (DecodeError, InvalidTokenError):
         flash('Invalid token.', 'danger')
         return redirect(url_for('forgotpassword'))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashedpsw = generate_password_hash(password=form.password.data,
+                                           method='pbkdf2:sha512')
+        upduserdata(user=user, data=dict(password=hashedpsw))
+        sendemail(subject='(Flask Blog) Your password was reset',
+                  user=user,
+                  url=request.host_url + 'forgotpassword',
+                  template='infopswemail.html')
+        flash('The new password has been confirmed.', 'primary')
+        return redirect(url_for('signin'))
+    return render_template('verification/newpassword.html', form=form, token=token)

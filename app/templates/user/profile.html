@@ -137,7 +137,7 @@
                                 <h6 class="mb-0">Date of registration</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
-                                <p class="text-muted mb-0">{{ user.date }}</p>
+                                <p class="text-muted mb-0">{{ user.date.strftime('%Y-%m-%d') }}</p>
                             </div>
                         </div>
                         {% if user.status == 'Author' or user.status == 'Admin' %}

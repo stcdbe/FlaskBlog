@@ -48,7 +48,7 @@
                   <a href="{{ url_for('getprofile', username=article.user.username) }}">{{ article.user.username }}</a>
                   {% endif %}
                 </div>
-                <small class="text-body-secondary">{{ article.date }}</small>
+                <small class="text-body-secondary">{{ article.date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
               </div>
             </div>
           </div>

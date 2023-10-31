@@ -34,7 +34,7 @@
                   src="{{ url_for('static', filename='images/profileimages/' + post.user.picture) }}" width="50">
                 <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"><a
                       href="{{ url_for('getprofile', username=post.username) }}">{{ post.username }}</a></span>
-                  <span class="text-black-50 time">{{ post.date }}</span>
+                  <span class="text-black-50 time">{{ post.date.strftime('%Y-%m-%d %H:%M:%S') }}</span>
                 </div>
               </div>
               <div class="feed-icon px-2">

@@ -19,11 +19,11 @@
                             <tr>
                                 <td width="10">
                                     <img class="rounded-circle" width="50"
-                                        src="{{ url_for('static', filename='images/profileimages/' + author.picture) }}" />
+                                        src="{{ url_for('static', filename='images/profileimages/' + author.picture) }}"/>
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('getprofile', username=author.username) }}">{% if author.name
-                                        %}{{ author.name }}{% else %}{{ author.username }}{% endif %}</a><br><i
+                                    <a href="{{ url_for('getprofile', username=author.username) }}">{% if author.name %}
+                                        {{ author.name }}{% else %}{{ author.username }}{% endif %}</a><br><i
                                         class="fa fa-envelope"></i>
                                 </td>
                                 <td>
@@ -33,7 +33,7 @@
                                     News<br><small class="text-muted">{{ author.news|length }}</small>
                                 </td>
                                 <td align="center">
-                                    Date of registration: {{ author.date }}<br><small class="text-muted"></small>
+                                    Date of registration: {{ author.date.strftime('%Y-%m-%d') }}<br><small class="text-muted"></small>
                                 </td>
                             </tr>
                             {% endfor %}

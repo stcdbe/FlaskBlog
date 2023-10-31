@@ -26,8 +26,8 @@ def signin() -> str | Response:
     if form.validate_on_submit():
         checkuser = getuser(usernameoremail=form.usernameoremail.data)
         if checkuser:
-            checkpassword = check_password_hash(checkuser.password, form.password.data)
-            if checkpassword:
+            checkpsw = check_password_hash(checkuser.password, form.password.data)
+            if checkpsw:
                 rm = form.remember.data
                 login_user(user=checkuser, remember=rm)
                 return redirect(url_for('main'))
@@ -46,13 +46,13 @@ def registration() -> str | Response:
 
     form = RegistrationForm()
     if form.validate_on_submit():
+        hashedpsw = generate_password_hash(password=form.password.data,
+                                           method='pbkdf2:sha512')
+        userdata = {'username': form.username.data,
+                    'email': form.email.data,
+                    'password': hashedpsw}
         try:
-            hashedpsw = generate_password_hash(password=form.password.data,
-                                               method='pbkdf2:sha512')
-            userdata = dict(username=form.username.data,
-                            email=form.email.data,
-                            password=hashedpsw,)
-            newuser = addnewuser(data=userdata)
+            newuser = addnewuser(userdata=userdata)
             rm = form.remember.data
             login_user(newuser, remember=rm)
             return redirect(url_for(endpoint='showposts', posts='articles'))

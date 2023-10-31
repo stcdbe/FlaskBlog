@@ -1,5 +1,3 @@
-import click
-
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
@@ -7,9 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_redmail import RedMail
 from flask_admin import Admin
 from flask_migrate import Migrate
+import click
 from werkzeug.security import generate_password_hash
 
-from app.config import ProductionConfig
+from app.config import ProductionConfig, DevelopmentConfig
 
 
 login_manager = LoginManager()
@@ -64,10 +63,17 @@ admin.add_view(adminviews.ArticleCommentView(model=dbmodels.ArticleComment,
 @click.argument('username')
 @click.argument('password')
 def createsuperuser(username: str, password: str) -> None:
+    if len(username) < 6 or len(username) > 100:
+        print('Username must be between 6 and 100 characters long')
+        return
+    elif len(password) < 6 or len(password) > 100:
+        print('Password must be between 6 and 100 characters long')
+        return
     hashedpsw = generate_password_hash(password=password,
                                        method='pbkdf2:sha512')
-    superuserdata = dict(username=username,
-                         email='admin@admin.admin',
-                         password=hashedpsw,
-                         status='Admin')
-    dbfuncs.addnewuser(data=superuserdata)
+    superuserdata = {'username': username,
+                     'email': 'admin@admin.admin',
+                     'password': hashedpsw,
+                     'status': 'Admin'}
+    dbfuncs.addnewuser(userdata=superuserdata)
+    print('Superuser has been created')

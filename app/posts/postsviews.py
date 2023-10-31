@@ -48,10 +48,10 @@ def showarticledetail(id: UUID) -> str | Response:
     if article:
         form = ArticleCommentForm()
         if form.validate_on_submit():
-            data = dict(articleid=article.id,
-                        text=form.text.data.strip(),
-                        username=current_user.username,
-                        date=datetime.utcnow().replace(microsecond=0),)
+            data = {'articleid': article.id,
+                    'text': form.text.data.strip(),
+                    'username': current_user.username,
+                    'date': datetime.utcnow().replace(microsecond=0)}
             addpost(data=data, tablemodel=ArticleComment)
         return render_template('posts/articledetail.html',
                                article=article,
@@ -73,13 +73,12 @@ def createpost(post: str) -> str | Response:
                     picname = savepicture(picture=form.picture.data,
                                           imgcatalog='postimages',
                                           size=(900, 400))
-                    articledata = dict(picture=picname,
-                                       title=form.title.data.strip(),
-                                       intro=form.intro.data.strip(),
-                                       category=form.category.data,
-                                       text=form.text.data.strip(),
-                                       username=current_user.username,
-                                       date=datetime.utcnow().replace(microsecond=0),)
+                    articledata = {'picture': picname,
+                                   'title': form.title.data.strip(),
+                                   'intro': form.intro.data.strip(),
+                                   'category': form.category.data,
+                                   'text': form.text.data.strip(),
+                                   'username': current_user.username}
                     addpost(data=articledata, tablemodel=Article)
                     return redirect(url_for(endpoint='showposts', posts='articles'))
                 return render_template('posts/createarticle.html', form=form)
@@ -90,12 +89,11 @@ def createpost(post: str) -> str | Response:
                     picname = savepicture(picture=form.picture.data,
                                           imgcatalog='postimages',
                                           size=(900, 400))
-                    newsdata = dict(picture=picname,
-                                    title=form.title.data.strip(),
-                                    category=form.category.data,
-                                    text=form.text.data.strip(),
-                                    username=current_user.username,
-                                    date=datetime.utcnow().replace(microsecond=0),)
+                    newsdata = {'picture': picname,
+                                'title': form.title.data.strip(),
+                                'category': form.category.data,
+                                'text': form.text.data.strip(),
+                                'username': current_user.username}
                     addpost(data=newsdata, tablemodel=News)
                     return redirect(url_for(endpoint='showposts', posts='news'))
                 return render_template('posts/createnewspost.html', form=form)
@@ -116,18 +114,17 @@ def editpost(post: str, id: UUID) -> str | Response:
             if article.username == current_user.username:
                 form = EditArticleForm()
                 if form.validate_on_submit():
-                    articledata = dict(title=form.title.data.strip(),
-                                       intro=form.intro.data.strip(),
-                                       category=form.category.data,
-                                       text=form.text.data.strip(),)
+                    articledata = {'title': form.title.data.strip(),
+                                   'intro': form.intro.data.strip(),
+                                   'category': form.category.data,
+                                   'text': form.text.data.strip()}
                     if form.picture.data:
-                        picname = savepicture(picture=form.picture.data,
-                                              imgcatalog='postimages',
-                                              size=(900, 400))
-                        articledata['picture'] = picname
+                        articledata['picture'] = savepicture(picture=form.picture.data,
+                                                             imgcatalog='postimages',
+                                                             size=(900, 400))
                         deletepicture(imgcatalog='postimages', picname=article.picture)
-                    updatedarticle = updatepost(post=article, data=articledata)
-                    return redirect(url_for(endpoint='showarticledetail', id=updatedarticle.id))
+                    updatepost(post=article, data=articledata)
+                    return redirect(url_for(endpoint='showarticledetail', id=article.id))
                 return render_template('posts/editarticle.html',
                                        form=form,
                                        post=article)
@@ -138,14 +135,13 @@ def editpost(post: str, id: UUID) -> str | Response:
             if newspost.username == current_user.username:
                 form = EditNewsForm()
                 if form.validate_on_submit():
-                    newsdata = dict(title=form.title.data.strip(),
-                                    category=form.category.data,
-                                    text=form.text.data.strip(),)
+                    newsdata = {'title': form.title.data.strip(),
+                                'category': form.category.data,
+                                'text': form.text.data.strip()}
                     if form.picture.data:
-                        picname = savepicture(picture=form.picture.data,
-                                              imgcatalog='postimages',
-                                              size=(900, 400))
-                        newsdata['picture'] = picname
+                        newsdata['picture'] = savepicture(picture=form.picture.data,
+                                                          imgcatalog='postimages',
+                                                          size=(900, 400))
                         deletepicture(imgcatalog='postimages', picname=newspost.picture)
                     updatepost(post=newspost, data=newsdata)
                     return redirect(url_for(endpoint='showposts', posts='news'))

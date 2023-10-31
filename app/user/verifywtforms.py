@@ -23,7 +23,8 @@ class RegistrationForm(FlaskForm):
                                        Length(min=6,
                                               max=100,
                                               message='Username must be between 6 and 100 characters long')])
-    email = StringField('Email address', validators=[DataRequired(), Email()])
+    email = StringField('Email address',
+                        validators=[DataRequired(), Email()])
     password = PasswordField('Password',
                              validators=[DataRequired(),
                                          Regexp(regex='^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',

@@ -29,7 +29,7 @@
                     <div style="white-space: pre-wrap; word-wrap: break-word;">
                         <h1 class="fw-bolder mb-1">{{ article.title }}</h1>
                     </div>
-                    <div class="text-muted fst-italic mb-2">Posted on {{ article.date }}
+                    <div class="text-muted fst-italic mb-2">Posted on {{ article.date.strftime('%Y-%m-%d %H:%M:%S') }}
                     </div>
                     <a class="badge bg-secondary text-decoration-none link-light"
                         href="{{ url_for('showposts', posts='articles', category=article.category) }}">{{
@@ -93,7 +93,7 @@
                                     <a href="{{ url_for('getprofile', username=comment.username) }}">{{ comment.username
                                         }}</a>
                                 </div>
-                                <div class="text-muted">{{ comment.date }}</div>
+                                <div class="text-muted">{{ comment.date.strftime('%Y-%m-%d %H:%M:%S') }}</div>
                                 <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ comment.text }}</div>
                             </div>
                         </div>

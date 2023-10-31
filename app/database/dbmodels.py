@@ -1,5 +1,8 @@
-from datetime import datetime, date
-from uuid import uuid4, UUID
+from datetime import datetime
+from uuid import uuid4
+
+from sqlalchemy import ForeignKey, UUID, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from flask_login import UserMixin
 
@@ -8,24 +11,24 @@ from app import db
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
     # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
-    username: db.Mapped[str] = db.mapped_column(db.String, unique=True, index=True)
-    email: db.Mapped[str] = db.mapped_column(db.String, unique=True, index=True)
-    password: db.Mapped[str]
-    date: db.Mapped[date] = db.mapped_column(db.Date, default=date.today())
-    picture: db.Mapped[str] = db.mapped_column(db.String, default='default.jpg')
-    status: db.Mapped[str] = db.mapped_column(db.String, default='Default')
-    name: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    position: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    company: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    location: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    website: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    github: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    twitter: db.Mapped[str] = db.mapped_column(db.String, nullable=True)
-    articles: db.Mapped[list['Article']] = db.relationship(back_populates='user', cascade='all, delete-orphan')
-    comments: db.Mapped[list['ArticleComment']] = db.relationship(back_populates='user', cascade='all, delete-orphan')
-    news: db.Mapped[list['News']] = db.relationship(back_populates='user', cascade='all, delete-orphan')
+    username: Mapped[str] = mapped_column(unique=True, index=True)
+    email: Mapped[str] = mapped_column(unique=True, index=True)
+    password: Mapped[str]
+    date: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.utcnow)
+    picture: Mapped[str] = mapped_column(default='default.jpg')
+    status: Mapped[str] = mapped_column(default='Default')
+    name: Mapped[str | None]
+    position: Mapped[str | None]
+    company: Mapped[str | None]
+    location: Mapped[str | None]
+    website: Mapped[str | None]
+    github: Mapped[str | None]
+    twitter: Mapped[str | None]
+    articles: Mapped[list['Article']] = relationship(back_populates='user', cascade='all, delete-orphan')
+    comments: Mapped[list['ArticleComment']] = relationship(back_populates='user', cascade='all, delete-orphan')
+    news: Mapped[list['News']] = relationship(back_populates='user', cascade='all, delete-orphan')
 
     def __repr__(self):
         return self.id
@@ -33,15 +36,15 @@ class User(db.Model, UserMixin):
 
 class News(db.Model):
     __tablename__ = 'news'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
     # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
-    title: db.Mapped[str] = db.mapped_column(index=True)
-    text: db.Mapped[str] = db.mapped_column(db.Text)
-    picture: db.Mapped[str]
-    username: db.Mapped[str] = db.mapped_column(db.ForeignKey('user.username'))
-    user: db.Mapped[list['User']] = db.relationship(back_populates='news')
-    category: db.Mapped[str]
-    date: db.Mapped[datetime] = db.mapped_column(db.DateTime, default=datetime.utcnow().replace(microsecond=0))
+    title: Mapped[str] = mapped_column(index=True)
+    text: Mapped[str] = mapped_column(Text)
+    picture: Mapped[str]
+    username: Mapped[str] = mapped_column(ForeignKey('user.username'))
+    user: Mapped[list['User']] = relationship(back_populates='news')
+    category: Mapped[str]
+    date: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.utcnow)
 
     def __repr__(self) -> str:
         return self.id
@@ -49,17 +52,17 @@ class News(db.Model):
 
 class Article(db.Model):
     __tablename__ = 'article'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
     # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
-    title: db.Mapped[str] = db.mapped_column(index=True)
-    intro: db.Mapped[str] = db.mapped_column(db.Text, nullable=True)
-    text: db.Mapped[str] = db.mapped_column(db.Text)
-    picture: db.Mapped[str]
-    username: db.Mapped[str] = db.mapped_column(db.ForeignKey('user.username'))
-    user: db.Mapped[list['User']] = db.relationship(back_populates='articles')
-    comments: db.Mapped[list['ArticleComment']] = db.relationship(cascade='all, delete-orphan')
-    category: db.Mapped[str]
-    date: db.Mapped[datetime] = db.mapped_column(db.DateTime, default=datetime.utcnow().replace(microsecond=0))
+    title: Mapped[str] = mapped_column(index=True)
+    intro: Mapped[str | None] = mapped_column(Text, nullable=True)
+    text: Mapped[str] = mapped_column(Text)
+    picture: Mapped[str]
+    username: Mapped[str] = mapped_column(ForeignKey('user.username'))
+    user: Mapped[list['User']] = relationship(back_populates='articles')
+    comments: Mapped[list['ArticleComment']] = relationship(cascade='all, delete-orphan')
+    category: Mapped[str]
+    date: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.utcnow)
 
     def __repr__(self):
         return self.id
@@ -67,14 +70,14 @@ class Article(db.Model):
 
 class ArticleComment(db.Model):
     __tablename__ = 'comment'
-    id: db.Mapped[UUID] = db.mapped_column(db.UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4, index=True)
     # id: Mapped[int] = mapped_column(db.Integer, primary_key=True, index=True)
-    articleid: db.Mapped[str] = db.mapped_column(db.ForeignKey('article.id'))
-    article: db.Mapped[list['Article']] = db.relationship(back_populates='comments')
-    username: db.Mapped[str] = db.mapped_column(db.ForeignKey('user.username'))
-    user: db.Mapped[list['User']] = db.relationship(back_populates='comments')
-    text: db.Mapped[str]
-    date: db.Mapped[datetime] = db.mapped_column(db.DateTime, default=datetime.utcnow().replace(microsecond=0))
+    articleid: Mapped[str] = mapped_column(ForeignKey('article.id'))
+    article: Mapped[list['Article']] = relationship(back_populates='comments')
+    username: Mapped[str] = mapped_column(ForeignKey('user.username'))
+    user: Mapped[list['User']] = relationship(back_populates='comments')
+    text: Mapped[str]
+    date: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.utcnow)
 
     def __repr__(self):
         return self.id

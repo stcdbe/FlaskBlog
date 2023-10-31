@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <form method="post" action="{{ url_for('editprofile', username=user.username)}}" enctype="multipart/form-data">
+    <form method="post" action="{{ url_for('editprofile', username=user.username) }}" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {% for cat, msg in get_flashed_messages(True) %}
         <div class="alert alert-{{ cat }}" role="alert">
@@ -154,7 +154,7 @@
                                     <h6 class="mb-0">Date of registration</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <p class="text-muted mb-0">{{ user.date }}</p>
+                                    <p class="text-muted mb-0">{{ user.date.strftime('%Y-%m-%d') }}</p>
                                 </div>
                             </div>
                             <div class="row">

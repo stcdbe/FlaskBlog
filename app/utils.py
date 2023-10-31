@@ -9,11 +9,9 @@ from app.database.dbmodels import User
 
 
 def savepicture(picture: FileStorage, imgcatalog: str, size: tuple[int, int]) -> str:
-    newname = token_hex(12)
     _, ext = os.path.splitext(picture.filename)
-    picname = newname + ext
+    picname = token_hex(12) + ext
     piclink = os.path.join(app.root_path, 'static', 'images', imgcatalog, picname)
-    print(piclink)
     with Image.open(picture) as img:
         rgbimg = img.convert('RGB')
         resizedimg = rgbimg.resize(size)
@@ -32,6 +30,6 @@ def deletepicture(imgcatalog: str, picname: str) -> None:
 
 def sendemail(subject: str, template: str, user: User, url: str) -> None:
     mail.send(subject=subject,
-              html_template=f'email/{template}',
+              html_template='email/' + template,
               receivers=[user.email],
               body_params=dict(user=user, url=url))
