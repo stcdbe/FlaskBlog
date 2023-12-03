@@ -27,8 +27,8 @@ class RegistrationForm(FlaskForm):
                         validators=[DataRequired(), Email()])
     password = PasswordField('Password',
                              validators=[DataRequired(),
-                                         # Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
-                                         #        message='Password must contain uppercase, lowercase letters and numbers'),
+                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
+                                                message='Password must contain uppercase, lowercase letters and numbers'),
                                          Length(min=6,
                                                 max=100,
                                                 message='Password must be between 6 and 100 characters long')])
@@ -51,8 +51,8 @@ class PasswordForgotForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     password = PasswordField('New password',
                              validators=[DataRequired(),
-                                         # Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
-                                         #        message='Password must contain uppercase, lowercase letters and numbers'),
+                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
+                                                message='Password must contain uppercase, lowercase letters and numbers'),
                                          Length(min=6,
                                                 max=100,
                                                 message='Password must be between 6 and 100 characters long')])
