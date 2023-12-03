@@ -1,11 +1,9 @@
 from multiprocessing import cpu_count
 
-from app.config import PORT
+from src.config import PORT
 
 
-bind = f'0.0.0.0:{PORT}'
-workers = cpu_count() * 2 + 1
-accesslog = "gunicorn.access.log"
-errorlog = "gunicorn.error.log"
+bind = '0.0.0.0:' + str(PORT)
+workers = (cpu_count() * 2) + 1
 capture_output = True
 loglevel = 'warning'

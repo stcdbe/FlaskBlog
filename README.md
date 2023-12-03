@@ -1,12 +1,11 @@
 # Flask Blog Website  
 ___
 ### Description
-Blog web application based on Flask framework with systems of verification, password recovery, administration, user's profile, creating and editing posts.
-As a database can be used SQLite or PostgreSQL.
+Blog web application based on Flask framework with systems of verification, password recovery, administration, user's profile, creating and updating posts.
 Application can be launched as Docker container.
-![](img/main.png)
+![](img/mainpage.png)
 ![](img/articles.png)
-![](img/onearticle.png)
+![](img/articledetail.png)
 ![](img/profile.png)
 ___
 ### Getting Started
@@ -20,49 +19,51 @@ $ pip install -r requirements.txt
 ````
 $ set FLASK_APP=wsgi.py
 ````
-+  init alembic
-````
-$ flask db init
-````
-+  generate an initial migration
-````
-$ flask db migrate -m "Initial"
-````
-+ create database tables
++ create tables in database
 ````
 $ flask db upgrade
 ````
 + (optional) create superuser
 ````
-$ flask create-superuser [OPTIONS] USERNAME PASSWORD
+$ flask create-superuser [OPTIONS] USERNAME EMAIL PASSWORD
 ````
 + start app in virtual environment
 ````
-$ gunicorn -c gunicorn.conf.py uwsgi:app
+$ gunicorn -c gunicorn.conf.py wsgi:app
+````
+#### Launch in Docker
++ configure environment variables in `.env` file
++ building the docker image
+````
+$ docker compose build
+````
++ start service
+````
+$ docker compose up -d
 ````
 ____
 #### Environment variables
-| variables             | description                                          |
-|:----------------------|:-----------------------------------------------------|
-| `PORT`                | application port                                     |
-| `SECRETKEY`           | a secret key for securely signing the session cookie |
-| `CSRFSECRETKEY`       | CSRF secret key                                      |
-| `PGUSER`              | PostgreSQL user                                      |
-| `PGHOST`              | hostname or an IP address PostgreSQL database        |
-| `PGPORT`              | PostgreSQL database port                             |
-| `PGDB`                | PostgreSQL database name                             |
-| `PGPASSWORD`          | PostgreSQL database password                         |
-| `EMAILSMTPSERVER`     | email SMTP server                                    |
-| `EMAILPORT`           | email port                                           |
-| `EMAIL`               | email address                                        |
-| `EMAILPASSWORD`       | email password                                       |
-| `RECAPTCHAPUBLICKEY`  | reCAPTCHA V2 public key                              |
-| `RECAPTCHAPRIVATEKEY` | reCAPTCHA V2 private key                             |
+| variables                 | description                                          |
+|:--------------------------|:-----------------------------------------------------|
+| `PORT`                    | application port                                     |
+| `SECRET_KEY`              | a secret key for securely signing the session cookie |
+| `CSRF_SECRET_KEY`         | CSRF secret key                                      |
+| `PG_USER`                 | PostgreSQL user                                      |
+| `PG_HOST`                 | hostname or an IP address PostgreSQL database        |
+| `PG_PORT`                 | PostgreSQL database port                             |
+| `PG_DB`                   | PostgreSQL database name                             |
+| `PG_PASSWORD`             | PostgreSQL database password                         |
+| `EMAIL_SMTP_SERVER`       | email SMTP server                                    |
+| `EMAIL_PORT`              | email port                                           |
+| `EMAIL_USERNAME`          | email address                                        |
+| `EMAIL_PASSWORD`          | email password                                       |
+| `RESET_PSW_TOKEN_EXPIRES` | reset password token lifetime in minutes             |
+| `RECAPTCHA_PUBLIC_KEY`    | reCAPTCHA V2 public key                              |
+| `RECAPTCHA_PRIVATE_KEY`   | reCAPTCHA V2 private key                             |
 ____
 #### Tech Stack
 + `Flask`
-+ `Flask-SQLAlchemy`
-+ `Flask-Migrate`
++ `Flask-SQLAlchemy` and `Flask-Migrate`
 + `Flask-Login`
 + `Flask-WTF`
 + `Flask-RedMail`

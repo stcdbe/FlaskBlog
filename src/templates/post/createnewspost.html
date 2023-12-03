@@ -1,0 +1,61 @@
+{% extends 'basepost.html' %}
+
+{% block title %}
+<title>Create news post</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <h2>Create post</h2>
+
+      {% block form %}
+      <form method="post" action="{{ url_for('create_post', posts='news') }}" enctype="multipart/form-data">
+        {% endblock %}
+
+        {{ form.hidden_tag() }}
+
+        {% for field, errors in form.errors.items() %}
+        <div class="alert alert-primary" role="alert">
+          <h6><b>{{ ', '.join(errors) }}</b></h6>
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+          <label>{{ form.title.label }} <span class="require">*</span><small> (This field use in
+              search.)</small></label>
+          {{ form.title(class="form-control", placeholder="100 characters max") }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.category.label }} <span class="require">*</span></label>
+          {{ form.category(class="form-control") }}
+        </div>
+
+        {% block formfields %}
+        <div class="form-group">
+          <label>{{ form.picture.label }} <span class="require">*</span></label>
+          {{ form.picture(class="form-control")}}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.text.label }} <span class="require">*</span></label>
+          {{ form.text(class="form-control", placeholder="500 characters max", rows="10") }}
+        </div>
+        {% endblock %}
+
+        <div class="form-group">
+          <p><span class="require">*</span> - required fields</p>
+        </div>
+
+        <div class="form-group">
+          {{ form.submit(class="btn btn-primary active", value="Add the news post") }}
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

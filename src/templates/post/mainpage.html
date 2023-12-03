@@ -1,0 +1,99 @@
+{% extends 'basepost.html' %}
+
+{% block title %}
+<title>Main</title>
+{% endblock %}
+
+{% block content %}
+<header class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+        <div class="text-center my-5">
+            <h1 class="fw-bolder">Welcome to Flask Blog Home!</h1>
+            <p class="lead mb-0">The WSGI application based of Flask framework</p>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            {% if articles %}
+            <div class="card mb-4">
+                <a href="#!"><img class="card-img-top"
+                        src="{{ url_for('static', filename='images/postimages/' + articles[0].picture) }}"
+                        alt="..." /></a>
+                <div class="card-body">
+                    <div class="small text-muted">{{ articles[0].created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                    <div class="feed-icon">
+                        <i class="fa fa-ellipsis-v text-black-50"></i>
+                        <a class="badge bg-secondary text-decoration-none link-light"
+                            href="{{ url_for('show_posts', posts='articles', category=articles[0].category.value) }}">{{
+                            articles[0].category.value }}</a>
+                    </div>
+                    <h2 class="card-title" style="white-space: pre-wrap; word-wrap: break-word;">{{ articles[0].title }}
+                    </h2>
+                    <p class="card-text" style="white-space: pre-wrap; word-wrap: break-word;">{{ articles[0].intro }}
+                    </p>
+                    <a class="btn btn-primary active"
+                        href="{{ url_for('show_article_detail', article_id=articles[0].id)  }}">Read
+                        more →</a>
+                </div>
+            </div>
+            <div class="row">
+                {% for article in articles[1:] %}
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <a href="#!"><img class="card-img-top"
+                                src="{{ url_for('static', filename='images/postimages/' + article.picture) }}"
+                                alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">{{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                            <div class="feed-icon">
+                                <i class="fa fa-ellipsis-v text-black-50"></i>
+                                <a class="badge bg-secondary text-decoration-none link-light"
+                                    href="{{ url_for('show_posts', posts='articles', category=article.category.value) }}">{{
+                                    article.category.value }}</a>
+                            </div>
+                            <h2 class="card-title h4" style="white-space: pre-wrap; word-wrap: break-word;">{{
+                                article.title }}</h2>
+                            <p class="card-text" style="white-space: pre-wrap; word-wrap: break-word;">{{ article.intro
+                                }}</p>
+                            <a class="btn btn-primary active"
+                                href="{{ url_for('show_article_detail', article_id=article.id)  }}">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">Article Categories</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="{{ url_for('show_posts', posts='articles') }}">All</a></li>
+                                {% for ctg in ['Development', 'Administration', 'Design', 'Management', 'Marketing',
+                                'Science'] %}
+                                <li><a href="{{ url_for('show_posts', posts='articles', category=ctg) }}">{{ ctg }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header"><a href="{{ url_for('show_posts', posts='news') }}">Recent News</a></div>
+                <div class="card-body">
+                    {% for post in news %}
+                    <small class="small text-muted">{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    <p style="white-space: pre-wrap; word-wrap: break-word;">{{ post.title }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
