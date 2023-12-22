@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <form method="post" action="{{ url_for('update_user_profile', username=user.username) }}"
+    <form method="post" action="{{ url_for('users.update_user_profile', username=user.username) }}"
         enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {% for cat, msg in get_flashed_messages(True) %}
@@ -25,11 +25,14 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-column align-items-center text-center">
-                                <img src="{{ url_for('static', filename='images/profileimages/' + user.picture) }}"
+                                <img src="{{ url_for('static', filename='img/profileimages/' + user.picture) }}"
                                     alt="avatar" class="rounded-circle" width="150">
                                 <div class="mt-3">
                                     {{ form.picture(class="form-control") }}
-                                    <h4>{{ user.username }}</h4>
+                                    <h5>{{ user.username }}</h5>
+                                    {% if current_user.id == user.id %}
+                                    <h5>{{ user.email }}</h5>
+                                    {% endif %}
                                 </div>
                             </div>
                             <hr class="my-4">

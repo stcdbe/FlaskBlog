@@ -9,7 +9,7 @@ class LoginForm(FlaskForm):
                                                 Length(min=6, max=100)])
     password = PasswordField('Password',
                              validators=[DataRequired(),
-                                         Length(min=6, max=100)])
+                                         Length(min=6, max=72)])
     remember = BooleanField('Remember me', default=False)
     recaptcha = RecaptchaField(validators=[Recaptcha(message='Invalid recaptcha')])
     submit = SubmitField('Login')
@@ -27,15 +27,14 @@ class RegistrationForm(FlaskForm):
                         validators=[DataRequired(), Email()])
     password = PasswordField('Password',
                              validators=[DataRequired(),
-                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
+                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,100}$',
                                                 message='Password must contain uppercase, lowercase letters and numbers'),
-                                         Length(min=6,
-                                                max=100,
+                                         Length(min=10,
+                                                max=72,
                                                 message='Password must be between 6 and 100 characters long')])
     repeat_password = PasswordField('Confirm password',
                                     validators=[DataRequired(),
-                                                EqualTo('password',
-                                                        message='Password mismatch.')])
+                                                EqualTo('password', message='Password mismatch.')])
     remember = BooleanField('Remember me', default=False)
     recaptcha = RecaptchaField(validators=[Recaptcha(message='Invalid recaptcha.')])
     submit = SubmitField('Sign up')
@@ -51,13 +50,12 @@ class PasswordForgotForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     password = PasswordField('New password',
                              validators=[DataRequired(),
-                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,100}$',
+                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,100}$',
                                                 message='Password must contain uppercase, lowercase letters and numbers'),
-                                         Length(min=6,
-                                                max=100,
+                                         Length(min=10,
+                                                max=72,
                                                 message='Password must be between 6 and 100 characters long')])
     repeat_password = PasswordField('Confirm new password',
                                     validators=[DataRequired(),
-                                                EqualTo('password',
-                                                        message='Password mismatch')])
+                                                EqualTo('password', message='Password mismatch')])
     submit = SubmitField('Reset password')

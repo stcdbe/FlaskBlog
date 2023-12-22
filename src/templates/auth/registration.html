@@ -8,7 +8,7 @@
 {% block formfields %}
 <h2 class="text-uppercase text-center mb-5">Create an account</h2>
 
-<form method="post" action="{{ url_for('registration') }}">
+<form method="post" action="{{ url_for('auth.registration') }}">
   {{ form.hidden_tag() }}
 
   {% for cat, msg in get_flashed_messages(True) %}
@@ -44,7 +44,7 @@
     {{ form.submit(class="btn btn-dark btn-lg")}}
   </div>
 
-  <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="{{ url_for('signin') }}"
+  <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="{{ url_for('auth.signin') }}"
       class="fw-bold text-body"><u>Login here</u></a></p>
 </form>
 {% endblock %}

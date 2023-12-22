@@ -1,7 +1,7 @@
 {% extends 'basepost.html' %}
 
 {% block title %}
-<title>Edit {{ post.title }}</title>
+<title>Update {{ post.title }}</title>
 {% endblock %}
 
 
@@ -9,11 +9,10 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <h2>Edit post</h2>
+            <h2>Update post</h2>
 
             {% block form %}
-            <form method="post" action="{{ url_for('update_post', posts='news' , post_id=post.id) }}"
-                enctype="multipart/form-data">
+            <form method="post" action="{{ url_for('posts.update_post', post_id=post.id) }}" enctype="multipart/form-data">
                 {% endblock %}
 
                 {{ form.hidden_tag() }}
@@ -34,21 +33,32 @@
                     {{ form.category(class="form-control", selected=post.category) }}
                 </div>
 
-                {% block formfields %}
+                {% if post.group == 'articles' %}
+                <div class="form-group">
+                    <label>Current {{ form.intro.label }}</label>
+                    <textarea id="intro" name="intro" rows="5" class="form-control"
+                        maxlength="300">{{ post.intro }}</textarea>
+                </div>
+                {% endif %}
+
                 <div class="form-group">
                     <label>Current image</label>
                     <p><img class="img-fluid rounded"
-                            src="{{ url_for('static', filename='images/postimages/' + post.picture) }}"></p>
+                            src="{{ url_for('static', filename='img/postimages/' + post.picture) }}"></p>
                     <label>New image</label>
                     {{ form.picture(class="form-control") }}
                 </div>
 
                 <div class="form-group">
                     <label>{{ form.text.label }}</label>
+                    {% if post.group == 'articles' %}
+                    <textarea id="text" name="text" rows="10" placeholder="5000 characters max" class="form-control"
+                        maxlength="5000">{{ post.text }}</textarea>
+                    {% else %}
                     <textarea id="text" name="text" rows="10" placeholder="500 characters max" class="form-control"
                         maxlength="500">{{ post.text }}</textarea>
+                    {% endif %}
                 </div>
-                {% endblock %}
 
                 <div class="form-group">
                     <p></p>

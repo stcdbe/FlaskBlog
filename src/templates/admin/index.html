@@ -29,8 +29,9 @@
   </tbody>
 </table>
 <div>
-  <form action="{{ url_for('show_main_page') }}">
-    <button class="btn btn-dark" type="submit">Back to main page</button>
+  <form>
+    <button class="btn btn-dark" type="submit" formaction="{{ url_for('main.show_main_page') }}">Back to main
+      page</button>
   </form>
 </div>
 {% endblock %}

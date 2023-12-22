@@ -45,7 +45,7 @@ def upgrade():
     sa.Column('intro', sa.String(), nullable=True),
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('picture', sa.String(), nullable=False),
-    sa.Column('type', sa.Enum('article_post', 'news_post', name='posttype'), nullable=False),
+    sa.Column('group', sa.Enum('articles', 'news', name='postgroup'), nullable=False),
     sa.Column('category', sa.Enum('Development', 'Administration', 'Design', 'Management', 'Marketing', 'Science', name='postcategory'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.UUID(), nullable=False),

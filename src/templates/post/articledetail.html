@@ -7,13 +7,15 @@
 {% block category %}
 <div class="nav-scroller bg-body shadow-sm">
     <nav class="nav" aria-label="Secondary navigation">
-        <li><a href="{{ url_for('show_posts', posts='articles') }}" class="nav-link text-black">All</a></li>
+        <li><a href="{{ url_for('posts.show_posts', post_group='articles') }}" class="nav-link text-black">All</a></li>
         {% for category in ['Development', 'Administration', 'Design', 'Management', 'Marketing', 'Science'] %}
-        <li><a href="{{ url_for('show_posts', posts='articles', category=category) }}" class="nav-link text-black">{{
+        <li><a href="{{ url_for('posts.show_posts', posts_group='articles', category=category) }}"
+                class="nav-link text-black">{{
                 category }}</a></li>
         {% endfor %}
         {% if current_user.is_authenticated and current_user.status in ['Author', 'Author'] %}
-        <li><a href="{{ url_for('create_post', posts='articles')}}" class="nav-link text-black">Write an article</a>
+        <li><a href="{{ url_for('posts.create_post', post_group='articles')}}" class="nav-link text-black">Write an
+                article</a>
         </li>
         {% endif %}
     </nav>
@@ -33,7 +35,7 @@
                         %H:%M:%S') }}
                     </div>
                     <a class="badge bg-secondary text-decoration-none link-light"
-                        href="{{ url_for('show_posts', posts='articles', category=article.category.value) }}">{{
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=article.category.value) }}">{{
                         article.category.value }}</a>
                 </header>
                 {% if article.intro %}
@@ -42,16 +44,17 @@
                 </div>
                 {% endif %}
                 <figure class="mb-4"><img class="img-fluid rounded"
-                        src="{{ url_for('static', filename='images/postimages/' + article.picture) }}" alt="">
+                        src="{{ url_for('static', filename='img/postimages/' + article.picture) }}" alt="">
                 </figure>
                 <section class="mb-5">
                     <div style="white-space: pre-wrap; word-wrap: break-word;">{{ article.text }}</div>
                     {% if current_user.id == article.user_id %}
-                    <div class="container mt-3">
-                        <form action="{{ url_for('update_post', posts='articles', post_id=article.id) }}">
-                            <button type="submit" class="btn btn-sm btn-secondary">Update</button>
-                        </form>
-                    </div>
+                    <form>
+                        <button type="submit" formaction="{{ url_for('posts.update_post', post_id=article.id) }}"
+                            class="btn btn-sm btn-primary active">Update</button>
+                        <button type="submit" formaction="{{ url_for('posts.delete_post', post_id=article.id) }}"
+                            formmethod="post" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
                     {% endif %}
                 </section>
             </article>
@@ -65,7 +68,7 @@
                         {% endfor %}
                         {% if current_user.is_authenticated %}
                         <form class="mb-4" method="post"
-                            action="{{ url_for('show_article_detail', article_id=article.id) }}"
+                            action="{{ url_for('posts.show_article_detail', post_id=article.id) }}"
                             enctype="multipart/form-data">
                             {{ form.hidden_tag() }}
                             <textarea id="text" name="text" rows="3" placeholder="250 characters max"
@@ -78,7 +81,7 @@
                         <div class="container mt-3">
                             <h4>Sign in to leave a comment.</h4>
                             <div class="container mt-3">
-                                <form action="{{ url_for('signin') }}">
+                                <form action="{{ url_for('auth.signin') }}">
                                     <button type="submit" class="btn btn-primary active">Login</button>
                                 </form>
                             </div>
@@ -88,11 +91,11 @@
                         {% for comment in article.comments %}
                         <div class="d-flex mt-4">
                             <div class="flex-shrink-0"><img class="rounded-circle"
-                                    src="{{ url_for('static', filename='images/profileimages/' + comment.user.picture) }}"
+                                    src="{{ url_for('static', filename='img/profileimages/' + comment.user.picture) }}"
                                     width="50" alt="..."></div>
                             <div class="ms-3">
                                 <div class="fw-bold">
-                                    <a href="{{ url_for('get_user_profile', username=comment.user.username) }}">{{
+                                    <a href="{{ url_for('users.get_user_profile', username=comment.user.username) }}">{{
                                         comment.user.username }}</a>
                                 </div>
                                 <div class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
@@ -100,7 +103,6 @@
                             </div>
                         </div>
                         {% endfor %}
-                        {% else %}
                         {% endif %}
                     </div>
                 </div>
@@ -112,10 +114,10 @@
                 <div class="card-body">
                     <div class="d-flex mt-4">
                         <div class="flex-shrink-0"><img class="rounded-circle"
-                                src="{{ url_for('static', filename='images/profileimages/' + article.user.picture) }}"
+                                src="{{ url_for('static', filename='img/profileimages/' + article.user.picture) }}"
                                 width="50" alt="article.user.picture"></div>
                         <div class="ms-3">
-                            <b><a href="{{ url_for('get_user_profile', username=article.user.username ) }}">{{
+                            <b><a href="{{ url_for('users.get_user_profile', username=article.user.username ) }}">{{
                                     article.user.username }}</a></b>
                         </div>
                     </div>

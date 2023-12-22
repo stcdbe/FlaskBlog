@@ -17,19 +17,17 @@
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <h3 class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">FlaskBlog</h3>
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a class="nav-link px-2 text-white" aria-current="page" href="{{ url_for('show_main_page')}}">Main</a>
+          <li><a class="nav-link px-2 text-white" aria-current="page" href="{{ url_for('main.show_main_page')}}">Main</a>
           </li>
-          <li><a class="nav-link px-2 text-white" href="{{ url_for('show_posts', posts='articles') }}">Articles</a>
-          <li><a class="nav-link px-2 text-white" href="{{ url_for('show_posts', posts='news') }}">News</a></li>
-          <li><a class="nav-link px-2 text-white" href="{{ url_for('show_authors') }}">Authors</a></li>
+          <li><a class="nav-link px-2 text-white" href="{{ url_for('posts.show_posts', post_group='articles') }}">Articles</a>
+          <li><a class="nav-link px-2 text-white" href="{{ url_for('posts.show_posts', post_group='news') }}">News</a></li>
+          <li><a class="nav-link px-2 text-white" href="{{ url_for('users.show_authors') }}">Authors</a></li>
           {% if current_user.is_authenticated and current_user.status == 'Admin' %}
           <li><a class="nav-link px-2 text-white" href="/admin">AdminDashboard</a></li>
           {% endif %}
         </ul>
-
         {% block navbar %}
         {% endblock %}
-
       </div>
     </div>
   </header>
@@ -43,14 +41,14 @@
   <div class="container">
     <footer class="py-3 my-4">
       <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-        <li class="nav-item"><a href="{{ url_for('show_main_page')}}" class="nav-link px-2 text-muted">Main</a></li>
-        <li class="nav-item"><a href="{{ url_for('show_posts', posts='articles') }}"
+        <li class="nav-item"><a href="{{ url_for('main.show_main_page')}}" class="nav-link px-2 text-muted">Main</a></li>
+        <li class="nav-item"><a href="{{ url_for('posts.show_posts', post_group='articles') }}"
             class="nav-link px-2 text-muted">Articles</a></li>
-        <li class="nav-item"><a href="{{ url_for('show_posts', posts='news') }}"
+        <li class="nav-item"><a href="{{ url_for('posts.show_posts', post_group='news') }}"
             class="nav-link px-2 text-muted">News</a></li>
-        <li class="nav-item"><a href="{{ url_for('show_authors') }}" class="nav-link px-2 text-muted">Authors</a></li>
+        <li class="nav-item"><a href="{{ url_for('users.show_authors') }}" class="nav-link px-2 text-muted">Authors</a></li>
       </ul>
-      <p class="text-center text-muted">© 2023 stcdbe</p>
+      <p class="text-center text-muted">©stcdbe 2023</p>
     </footer>
   </div>
 </body>

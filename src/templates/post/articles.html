@@ -7,13 +7,14 @@
 {% block category %}
 <div class="nav-scroller bg-body shadow-sm">
   <nav class="nav" aria-label="Secondary navigation">
-    <li><a href="{{ url_for('show_posts', posts='articles') }}" class="nav-link text-black">All</a></li>
+    <li><a href="{{ url_for('posts.show_posts', post_group='articles') }}" class="nav-link text-black">All</a></li>
     {% for category in ['Development', 'Administration', 'Design', 'Management', 'Marketing', 'Science'] %}
-    <li><a href="{{ url_for('show_posts', posts='articles', category=category) }}" class="nav-link text-black">{{
+    <li><a href="{{ url_for('posts.show_posts', post_group='articles', category=category) }}" class="nav-link text-black">{{
         category }}</a></li>
     {% endfor %}
     {% if current_user.is_authenticated and current_user.status in ['Admin', 'Author'] %}
-    <li><a href="{{ url_for('create_post', posts='articles')}}" class="nav-link text-black">Write an article</a></li>
+    <li><a href="{{ url_for('posts.create_post', post_group='articles')}}" class="nav-link text-black">Create an article</a>
+    </li>
     {% endif %}
   </nav>
 </div>
@@ -21,28 +22,29 @@
 
 {% block content %}
 <div class="container mt-5">
-  {% if ctg %}<h1>{{ ctg }} Articles</h1>{% else %}<h1>All Articles</h1>{% endif %}
+  <h2>{% if ctg %}{{ ctg }} Articles{% else %}All Articles{% endif %}</h2>
   <div class="album py-5 ">
     <div class="container">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {% for article in pagination.items %}
         <div class="col">
           <div class="card shadow-sm">
-            <a href="{{ url_for('show_article_detail', article_id=article.id) }}">
+            <a href="{{ url_for('posts.show_article_detail', post_id=article.id) }}">
               <img class="bd-placeholder-img card-img-top" width="100%" height="225"
-                src="{{ url_for('static', filename='images/postimages/' + article.picture) }}">
+                src="{{ url_for('static', filename='img/postimages/' + article.picture) }}">
             </a>
             <div class="card-body">
-              <h4><a href="{{ url_for('show_article_detail', article_id=article.id) }}">{{ article.title }}</a></h4>
+              <h4><a href="{{ url_for('posts.show_article_detail', post_id=article.id) }}">{{ article.title }}</a></h4>
               <p><a class="badge bg-secondary text-decoration-none link-light"
-                  href="{{ url_for('show_posts', posts='articles', category=article.category.value) }}">{{
-                  article.category.value
-                  }}</a>
+                  href="{{ url_for('posts.show_posts', post_group='articles', category=article.category.value) }}">{{
+                  article.category.value }}</a>
               </p>
+              {% if article.intro %}
               <p class="card-text">{{ article.intro }}</p>
+              {% endif %}
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a href="{{ url_for('get_user_profile', username=article.user.username) }}">{{ article.user.username
+                  <a href="{{ url_for('users.get_user_profile', username=article.user.username) }}">{{ article.user.username
                     }}</a>
                 </div>
                 <small class="text-body-secondary">{{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
@@ -58,22 +60,23 @@
     <nav>
       <ul class="pagination">
         {% if pagination.has_prev %}<li class="page-item"><a class="page-link"
-            href="{{ url_for('show_posts', posts='articles', category=ctg, page=pagination.prev_num) }}">Previous</a>
+            href="{{ url_for('posts.show_posts', post_group='articles', category=ctg, page=pagination.prev_num) }}">Previous</a>
         </li>
         {% endif %}
         {% for page in pagination.iter_pages() %}
         {% if page %}
         {% if page != pagination.page %}
         <li class="page-item"><a class="page-link"
-            href="{{ url_for('show_posts', posts='articles', category=ctg, page=page) }}">{{ page }}</a></li>
+            href="{{ url_for('posts.show_posts', post_group='articles', category=ctg, page=page) }}">{{ page }}</a></li>
         {% else %}
         <li class="page-item disabled"><a class="page-link" href="">{{ page }}</a></li>
         {% endif %}
         {% endif %}
         {% endfor %}
         {% if pagination.has_next %}<li class="page-item"><a class="page-link"
-            href="{{ url_for('show_posts', posts='articles', category=ctg, page=pagination.next_num) }}">Next</a></li>{%
-        endif %}
+            href="{{ url_for('posts.show_posts', post_group='articles', category=ctg, page=pagination.next_num) }}">Next</a>
+        </li>
+        {% endif %}
       </ul>
     </nav>
   </div>

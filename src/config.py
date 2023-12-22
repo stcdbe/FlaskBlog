@@ -1,25 +1,29 @@
-import os
-
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 
-load_dotenv()
+env = dotenv_values()
 
-PORT = int(os.getenv('PORT'))
+PORT = int(env['PORT'])
 
-PG_USER = str(os.getenv('PG_USER'))
-PG_PASSWORD = str(os.getenv('PG_PASSWORD'))
-PG_HOST = str(os.getenv('PG_HOST'))
-PG_PORT = str(os.getenv('PG_PORT'))
-PG_DB = str(os.getenv('PG_DB'))
+PG_USER = env['PG_USER']
+PG_PASSWORD = env['PG_PASSWORD']
+PG_HOST = env['PG_HOST']
+PG_PORT = env['PG_PORT']
+PG_DB = env['PG_DB']
 
-RESET_PSW_TOKEN_EXPIRES = int(os.getenv('RESET_PSW_TOKEN_EXPIRES'))
+RESET_PSW_TOKEN_EXPIRES = int(env['RESET_PSW_TOKEN_EXPIRES'])
+
+EMAIL_HOST = env['EMAIL_SMTP_SERVER']
+EMAIL_PORT = int(env['EMAIL_PORT'])
+EMAIL_USERNAME = env['EMAIL_USERNAME']
+EMAIL_PASSWORD = env['EMAIL_PASSWORD']
+EMAIL_SENDER = env['EMAIL_SENDER']
 
 
 class DevelopmentConfig(object):
     DEBUG = True
     TESTING = True
-    SECRET_KEY = str(os.getenv('SECRET_KEY'))
+    SECRET_KEY = env['SECRET_KEY']
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}'
@@ -29,20 +33,14 @@ class DevelopmentConfig(object):
                                  'pool_recycle': 3600,
                                  'pool_pre_ping': True}
 
-    WTF_CSRF_SECRET_KEY = str(os.getenv('CSRF_SECRET_KEY'))
-    WTF_CSRF_TIME_LIMIT = 3600 * 3
+    WTF_CSRF_SECRET_KEY = env['CSRF_SECRET_KEY']
+    WTF_CSRF_TIME_LIMIT = 60 * int(env['CSRF_TIME_LIMIT'])
 
-    RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
-    RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
+    RECAPTCHA_PUBLIC_KEY = env['RECAPTCHA_PUBLIC_KEY']
+    RECAPTCHA_PRIVATE_KEY = env['RECAPTCHA_PRIVATE_KEY']
     RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
     FLASK_ADMIN_SWATCH = 'cosmo'
-
-    EMAIL_HOST = str(os.getenv('EMAIL_SMTP_SERVER'))
-    EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
-    EMAIL_USERNAME = str(os.getenv('EMAIL_USERNAME'))
-    EMAIL_PASSWORD = str(os.getenv('EMAIL_PASSWORD'))
-    EMAIL_SENDER = 'noreply@flaskblog.com'
 
 
 class ProductionConfig(DevelopmentConfig):

@@ -7,9 +7,9 @@ class UserStatus(str, Enum):
     Admin = 'Admin'
 
 
-class PostType(str, Enum):
-    article_post = 'article_post'
-    news_post = 'news_post'
+class PostGroup(str, Enum):
+    articles = 'articles'
+    news = 'news'
 
 
 class PostCategory(str, Enum):

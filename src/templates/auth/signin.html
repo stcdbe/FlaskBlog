@@ -6,7 +6,7 @@
 
 {% block formfields %}
 <h2 class="text-uppercase text-center mb-5">Sign in</h2>
-<form method="post" action="{{ url_for('signin') }}">
+<form method="post" action="{{ url_for('auth.signin') }}">
   {{ form.hidden_tag() }}
 
   {% for cat, msg in get_flashed_messages(True) %}
@@ -28,7 +28,8 @@
   <div class="form-outline mb-4">
     {{ form.password(class="form-control form-control-lg") }}
     <label class="form-label">{{ form.password.label }}</label>
-    <p align="right"><a href="{{ url_for('forgot_password') }}" class="fw-bold text-body"><u>Forgot password?</u></a>
+    <p align="right"><a href="{{ url_for('auth.forgot_password') }}" class="fw-bold text-body"><u>Forgot
+          password?</u></a>
     </p>
   </div>
 
@@ -47,7 +48,7 @@
     {{ form.submit(class="btn btn-dark btn-lg ")}}
   </div>
 
-  <p class="text-center text-muted mt-5 mb-0">Have no account yet? <a href="{{ url_for('registration') }}"
+  <p class="text-center text-muted mt-5 mb-0">Have no account yet? <a href="{{ url_for('auth.registration') }}"
       class="fw-bold text-body"><u>Sign up here</u></a></p>
 
 </form>

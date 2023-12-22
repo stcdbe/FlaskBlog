@@ -45,18 +45,20 @@ ____
 #### Environment variables
 | variables                 | description                                          |
 |:--------------------------|:-----------------------------------------------------|
-| `PORT`                    | application port                                     |
+| `PORT`                    | app port                                             |
 | `SECRET_KEY`              | a secret key for securely signing the session cookie |
 | `CSRF_SECRET_KEY`         | CSRF secret key                                      |
-| `PG_USER`                 | PostgreSQL user                                      |
-| `PG_HOST`                 | hostname or an IP address PostgreSQL database        |
-| `PG_PORT`                 | PostgreSQL database port                             |
-| `PG_DB`                   | PostgreSQL database name                             |
-| `PG_PASSWORD`             | PostgreSQL database password                         |
+| `CSRF_TIME_LIMIT`         | CSRF token lifetime in minutes                       |
+| `PG_USER`                 | PGSQL user                                           |
+| `PG_HOST`                 | hostname or an IP address PGSQL database             |
+| `PG_PORT`                 | PGSQL database port                                  |
+| `PG_DB`                   | PGSQL database name                                  |
+| `PG_PASSWORD`             | PGSQL database password                              |
 | `EMAIL_SMTP_SERVER`       | email SMTP server                                    |
 | `EMAIL_PORT`              | email port                                           |
 | `EMAIL_USERNAME`          | email address                                        |
 | `EMAIL_PASSWORD`          | email password                                       |
+| `EMAIL_SENDER`            | email sender                                         |
 | `RESET_PSW_TOKEN_EXPIRES` | reset password token lifetime in minutes             |
 | `RECAPTCHA_PUBLIC_KEY`    | reCAPTCHA V2 public key                              |
 | `RECAPTCHA_PRIVATE_KEY`   | reCAPTCHA V2 private key                             |
@@ -66,7 +68,7 @@ ____
 + `Flask-SQLAlchemy` and `Flask-Migrate`
 + `Flask-Login`
 + `Flask-WTF`
-+ `Flask-RedMail`
-+ `Flask-JWTManager`
++ `Flask-JWT-Extended`
 + `Pillow`
 + `gunicorn`
++ `docker` and `docker-compose`
