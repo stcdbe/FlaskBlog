@@ -12,7 +12,7 @@ ___
 #### Running on Local Machine
 + install dependencies using PIP
 ````
-$ pip install -r requirements.txt 
+$ pip install -r requirements/prod.txt 
 ````
 + configure environment variables in `.env` file
 + add app entrypoint
@@ -54,11 +54,17 @@ ____
 | `PG_PORT`                 | PGSQL database port                                  |
 | `PG_DB`                   | PGSQL database name                                  |
 | `PG_PASSWORD`             | PGSQL database password                              |
+| `PG_USER_TEST`            | PGSQL test user                                      |
+| `PG_PASSWORD_TEST`        | PGSQL test user password                             |
+| `PG_HOST_TEST`            | hostname or an IP address of PGSQL test database     |
+| `PG_PORT_TEST`            | port from PGSQL test database                        |
+| `PG_DB_TEST`              | PGSQL test database                                  |
 | `EMAIL_SMTP_SERVER`       | email SMTP server                                    |
 | `EMAIL_PORT`              | email port                                           |
 | `EMAIL_USERNAME`          | email address                                        |
 | `EMAIL_PASSWORD`          | email password                                       |
 | `EMAIL_SENDER`            | email sender                                         |
+| `TEST_EMAIL_RECEIVER`     | test email receiver                                  |
 | `RESET_PSW_TOKEN_EXPIRES` | reset password token lifetime in minutes             |
 | `RECAPTCHA_PUBLIC_KEY`    | reCAPTCHA V2 public key                              |
 | `RECAPTCHA_PRIVATE_KEY`   | reCAPTCHA V2 private key                             |

@@ -21,6 +21,19 @@ def count_all_comments_db() -> int:
     return db.session.execute(stmt).scalar()
 
 
+def get_post_db(post_id: UUID) -> Post | None:
+    stmt = select(Post).where(Post.id == post_id)
+    try:
+        return (db.session.execute(stmt)).scalars().first()
+    except (DBAPIError, DataError):
+        return
+
+
+def get_post_by_title_db(title: str) -> Post | None:
+    stmt = select(Post).where(Post.title == title)
+    return db.session.execute(stmt).scalars().first()
+
+
 def get_some_posts_db(post_group: PostGroup, size: int) -> list[Post]:
     stmt = (select(Post)
             .where(Post.group == post_group)
@@ -30,8 +43,8 @@ def get_some_posts_db(post_group: PostGroup, size: int) -> list[Post]:
 
 def get_posts_pgn(post_group: PostGroup,
                   per_page: int,
-                  page: int = 1,
-                  category: PostCategory | None = None) -> Pagination | None:
+                  page: int,
+                  category: PostCategory | None = None) -> Pagination:
     if category:
         stmt = (select(Post)
                 .where(and_(Post.group == post_group,
@@ -42,14 +55,6 @@ def get_posts_pgn(post_group: PostGroup,
                 .where(Post.group == post_group)
                 .order_by(Post.created_at.desc()))
     return db.paginate(select=stmt, page=page, per_page=per_page)
-
-
-def get_post_db(post_id: UUID) -> Post | None:
-    stmt = select(Post).where(Post.id == post_id)
-    try:
-        return (db.session.execute(stmt)).scalars().first()
-    except (DBAPIError, DataError):
-        return
 
 
 def add_post_db(post_data: dict[str, Any]) -> None:
@@ -77,6 +82,11 @@ def add_com_db(post: Post, com_data: dict[str, Any]) -> None:
         setattr(new_com, key, val)
     post.comments.append(new_com)
     db.session.commit()
+
+
+def get_com_by_text_db(text: str) -> Comment | None:
+    stmt = select(Comment).where(Comment.text == text)
+    return db.session.execute(stmt).scalars().first()
 
 
 def search_posts_db(query: str,

@@ -1,6 +1,6 @@
 import logging
 import os
-from os.path import splitext, join, dirname, realpath
+from pathlib import Path
 import smtplib
 from email.message import EmailMessage
 from typing import Any
@@ -16,9 +16,9 @@ from src.config import EMAIL_SENDER, EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD, EMA
 def save_picture(picture: FileStorage,
                  img_catalog: str,
                  size: tuple[int, int]) -> str:
-    _, ext = splitext(picture.filename)
+    _, ext = os.path.splitext(picture.filename)
     pic_name = token_urlsafe(16) + ext
-    pic_link = join(dirname(realpath(__file__)), 'static', 'img', img_catalog, pic_name)
+    pic_link = (Path(__file__).parent / 'static' / 'img' / img_catalog / pic_name)
     with Image.open(picture) as img:
         rgb_img = img.convert(mode='RGB')
         resized_img = rgb_img.resize(size=size)
@@ -29,11 +29,11 @@ def save_picture(picture: FileStorage,
 def delete_picture(img_catalog: str, pic_name: str) -> None:
     if pic_name == 'default.jpg':
         return
-    pic_link = join(dirname(realpath(__file__)), 'static', 'img', img_catalog, pic_name)
+    pic_link = (Path(__file__).parent / 'static' / 'img' / img_catalog / pic_name)
     try:
         os.remove(pic_link)
     except FileNotFoundError:
-        logging.warning(f'Attempt to delete a non-existent file: {pic_link}')
+        logging.warning('Attempt to delete a non-existent file: %s', pic_link)
 
 
 def render_email_body(email_template: str, **kwargs: dict[str, Any]) -> str:

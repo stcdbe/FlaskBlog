@@ -8,8 +8,9 @@ from src.utils import save_picture
 def serialize_post_form(form_data: dict[str, Any],
                         post_group: PostGroup,
                         creator_id: UUID) -> dict[str, Any]:
-    form_data.pop('submit')
-    form_data.pop('csrf_token')
+    for key in ['submit', 'csrf_token']:
+        if key in form_data:
+            form_data.pop(key)
 
     if form_data['picture']:
         pic_name = save_picture(picture=form_data['picture'],
@@ -32,8 +33,9 @@ def serialize_post_form(form_data: dict[str, Any],
 def serialize_com_form(form_data: dict[str, Any],
                        post_id: UUID,
                        creator_id: UUID) -> dict[str, Any]:
-    form_data.pop('submit')
-    form_data.pop('csrf_token')
+    for key in ['submit', 'csrf_token']:
+        if key in form_data:
+            form_data.pop(key)
 
     for key, val in form_data.items():
         if isinstance(val, str):

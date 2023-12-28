@@ -30,8 +30,9 @@ def get_user_by_username_db(username: str) -> User | None:
 
 
 def get_user_by_uname_or_email_db(username_or_email: str) -> User | None:
-    stmt = select(User).where(or_(User.username == username_or_email,
-                                  User.email == username_or_email))
+    stmt = (select(User)
+            .where(or_(User.username == username_or_email,
+                       User.email == username_or_email)))
     return (db.session.execute(stmt)).scalars().first()
 
 
@@ -50,7 +51,7 @@ def create_user_db(user_data: dict[str, Any]) -> User | None:
         return
 
 
-def update_user_db(user: User, upd_data: dict[str, Any]) -> User | None:
+def update_user_db(user: User, upd_data: dict[str, Any]) -> User:
     for key, val in upd_data.items():
         setattr(user, key, val)
 
@@ -60,8 +61,8 @@ def update_user_db(user: User, upd_data: dict[str, Any]) -> User | None:
 
 
 def get_users_pgn(user_status: UserStatus,
-                  page: int = 1,
-                  per_page: int = 10) -> Pagination:
+                  page: int,
+                  per_page: int) -> Pagination:
     stmt = (select(User)
             .where(User.status == user_status)
             .order_by(User.username))

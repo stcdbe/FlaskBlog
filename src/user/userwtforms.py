@@ -13,7 +13,7 @@ class ProfileUpdateForm(FlaskForm):
                                        Length(max=50,
                                               message='Full name cannot be longer than 50 characters.')],
                            filters=[lambda x: x or None])
-    job_title = StringField('Position',
+    job_title = StringField('Job Title',
                             validators=[Optional(),
                                         Length(max=50,
                                                message='Position cannot be longer than 50 characters.')],

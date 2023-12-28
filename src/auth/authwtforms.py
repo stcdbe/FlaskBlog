@@ -27,7 +27,7 @@ class RegistrationForm(FlaskForm):
                         validators=[DataRequired(), Email()])
     password = PasswordField('Password',
                              validators=[DataRequired(),
-                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,100}$',
+                                         Regexp(regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,72}$',
                                                 message='Password must contain uppercase, lowercase letters and numbers'),
                                          Length(min=10,
                                                 max=72,

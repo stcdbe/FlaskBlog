@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_migrate import Migrate
 
-from src.config import ProductionConfig, DevelopmentConfig
 from src.database.dbmodels import User, Post, Comment, BaseModel
 
 
@@ -18,11 +17,10 @@ db = SQLAlchemy(model_class=BaseModel)
 migrate = Migrate()
 
 
-def create_app() -> Flask:
+def create_app(config_object: object) -> Flask:
     app = Flask(__name__)
 
-    # app.config.from_object(obj=DevelopmentConfig)
-    app.config.from_object(obj=ProductionConfig)
+    app.config.from_object(obj=config_object)
 
     login_manager.init_app(app=app)
     login_manager.session_protection = 'strong'

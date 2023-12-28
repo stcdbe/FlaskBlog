@@ -11,6 +11,12 @@ PG_HOST = env['PG_HOST']
 PG_PORT = env['PG_PORT']
 PG_DB = env['PG_DB']
 
+PG_USER_TEST = env['PG_USER_TEST']
+PG_PASSWORD_TEST = env['PG_PASSWORD_TEST']
+PG_HOST_TEST = env['PG_HOST_TEST']
+PG_PORT_TEST = env['PG_PORT_TEST']
+PG_DB_TEST = env['PG_DB_TEST']
+
 RESET_PSW_TOKEN_EXPIRES = int(env['RESET_PSW_TOKEN_EXPIRES'])
 
 EMAIL_HOST = env['EMAIL_SMTP_SERVER']
@@ -18,9 +24,10 @@ EMAIL_PORT = int(env['EMAIL_PORT'])
 EMAIL_USERNAME = env['EMAIL_USERNAME']
 EMAIL_PASSWORD = env['EMAIL_PASSWORD']
 EMAIL_SENDER = env['EMAIL_SENDER']
+TEST_EMAIL_RECEIVER = env['TEST_EMAIL_RECEIVER']
 
 
-class DevelopmentConfig(object):
+class DevelopmentSettings:
     DEBUG = True
     TESTING = True
     SECRET_KEY = env['SECRET_KEY']
@@ -43,6 +50,12 @@ class DevelopmentConfig(object):
     FLASK_ADMIN_SWATCH = 'cosmo'
 
 
-class ProductionConfig(DevelopmentConfig):
+class TestSettings(DevelopmentSettings):
+    WTF_CSRF_ENABLED = False
+    LOGIN_DISABLED = True
+    SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{PG_USER_TEST}:{PG_PASSWORD_TEST}@{PG_HOST_TEST}:{PG_PORT_TEST}/{PG_DB_TEST}'
+
+
+class ProductionSettings(DevelopmentSettings):
     DEBUG = False
     TESTING = False

@@ -4,10 +4,11 @@ from src.utils import save_picture
 
 
 def serialize_profile_form(form_data: dict[str, Any]) -> dict[str, Any]:
-    form_data.pop('submit')
-    form_data.pop('csrf_token')
+    for key in ['submit', 'csrf_token']:
+        if key in form_data:
+            form_data.pop(key)
 
-    if form_data['picture']:
+    if form_data.get('picture'):
         pic_name = save_picture(picture=form_data['picture'],
                                 img_catalog='profileimages',
                                 size=(250, 250))
