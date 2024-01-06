@@ -1,36 +1,41 @@
-from dotenv import dotenv_values
+import os
+
+from dotenv import load_dotenv
 
 
-env = dotenv_values()
+load_dotenv()
 
-PORT = int(env['PORT'])
+PORT = int(os.getenv('PORT'))
 
-PG_USER = env['PG_USER']
-PG_PASSWORD = env['PG_PASSWORD']
-PG_HOST = env['PG_HOST']
-PG_PORT = env['PG_PORT']
-PG_DB = env['PG_DB']
+PG_USER = os.getenv('PG_USER')
+PG_PASSWORD = os.getenv('PG_PASSWORD')
+PG_HOST = os.getenv('PG_HOST')
+PG_PORT = os.getenv('PG_PORT')
+PG_DB = os.getenv('PG_DB')
 
-PG_USER_TEST = env['PG_USER_TEST']
-PG_PASSWORD_TEST = env['PG_PASSWORD_TEST']
-PG_HOST_TEST = env['PG_HOST_TEST']
-PG_PORT_TEST = env['PG_PORT_TEST']
-PG_DB_TEST = env['PG_DB_TEST']
+PG_USER_TEST = os.getenv('PG_USER_TEST')
+PG_PASSWORD_TEST = os.getenv('PG_PASSWORD_TEST')
+PG_HOST_TEST = os.getenv('PG_HOST_TEST')
+PG_PORT_TEST = os.getenv('PG_PORT_TEST')
+PG_DB_TEST = os.getenv('PG_DB_TEST')
 
-RESET_PSW_TOKEN_EXPIRES = int(env['RESET_PSW_TOKEN_EXPIRES'])
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
 
-EMAIL_HOST = env['EMAIL_SMTP_SERVER']
-EMAIL_PORT = int(env['EMAIL_PORT'])
-EMAIL_USERNAME = env['EMAIL_USERNAME']
-EMAIL_PASSWORD = env['EMAIL_PASSWORD']
-EMAIL_SENDER = env['EMAIL_SENDER']
-TEST_EMAIL_RECEIVER = env['TEST_EMAIL_RECEIVER']
+RESET_PSW_TOKEN_EXPIRES = int(os.getenv('RESET_PSW_TOKEN_EXPIRES'))
+
+EMAIL_HOST = os.getenv('EMAIL_SMTP_SERVER')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_USERNAME = os.getenv('EMAIL_USERNAME')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+TEST_EMAIL_RECEIVER = os.getenv('TEST_EMAIL_RECEIVER')
 
 
 class DevelopmentSettings:
     DEBUG = True
     TESTING = True
-    SECRET_KEY = env['SECRET_KEY']
+    SECRET_KEY = os.getenv('SECRET_KEY')
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}'
@@ -40,14 +45,18 @@ class DevelopmentSettings:
                                  'pool_recycle': 3600,
                                  'pool_pre_ping': True}
 
-    WTF_CSRF_SECRET_KEY = env['CSRF_SECRET_KEY']
-    WTF_CSRF_TIME_LIMIT = 60 * int(env['CSRF_TIME_LIMIT'])
+    WTF_CSRF_SECRET_KEY = os.getenv('CSRF_SECRET_KEY')
+    WTF_CSRF_TIME_LIMIT = 60 * int(os.getenv('CSRF_TIME_LIMIT'))
 
-    RECAPTCHA_PUBLIC_KEY = env['RECAPTCHA_PUBLIC_KEY']
-    RECAPTCHA_PRIVATE_KEY = env['RECAPTCHA_PRIVATE_KEY']
+    RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+    RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
     RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
     FLASK_ADMIN_SWATCH = 'cosmo'
+
+    CELERY = {'broker_url': f'redis://{REDIS_HOST}:{REDIS_PORT}',
+              'result_backend': f'redis://{REDIS_HOST}:{REDIS_PORT}',
+              'task_ignore_result': True}
 
 
 class TestSettings(DevelopmentSettings):

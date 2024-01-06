@@ -12,6 +12,11 @@ main_page_router = Blueprint('main',
                              template_folder='templates')
 
 
+@main_page_router.get('/favicon.ico')
+def favicon() -> Any:
+    return main_page_router.send_static_file(filename='img/favicon.ico')
+
+
 @main_page_router.get('/')
 def show_main_page() -> Any:
     articles = get_some_posts_db(post_group=PostGroup.articles, size=7)

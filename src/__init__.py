@@ -1,4 +1,3 @@
-from typing import Any
 from uuid import UUID
 
 from flask import Flask
@@ -8,7 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_migrate import Migrate
 
-from src.database.dbmodels import User, Post, Comment, BaseModel
+from src.database.dbmodels import BaseModel, User, Post, Comment
+from src.celery import celery_init_app
 
 
 login_manager = LoginManager()
@@ -17,7 +17,7 @@ db = SQLAlchemy(model_class=BaseModel)
 migrate = Migrate()
 
 
-def create_app(config_object: object) -> Flask:
+def create_app(config_object: object | str) -> Flask:
     app = Flask(__name__)
 
     app.config.from_object(obj=config_object)
@@ -27,6 +27,7 @@ def create_app(config_object: object) -> Flask:
     jwt.init_app(app=app)
     db.init_app(app=app)
     migrate.init_app(app=app, db=db)
+    celery_init_app(app=app)
 
     from src.admin.adminviews import DashboardView, UserView, PostView, CommentView
     from src.user.userviews import user_router
@@ -39,7 +40,10 @@ def create_app(config_object: object) -> Flask:
 
     @login_manager.user_loader
     def load_user(user_id: str) -> User | None:
-        return get_user_db(user_id=UUID(user_id))
+        try:
+            return get_user_db(user_id=UUID(user_id))
+        except ValueError:
+            return
 
     admin = Admin(app=app,
                   name='FlaskBlog Admin Dashboard',
@@ -61,9 +65,5 @@ def create_app(config_object: object) -> Flask:
     app.register_blueprint(post_router)
     app.register_blueprint(error_router)
     app.cli.add_command(create_superuser)
-
-    @app.get('/favicon.ico')
-    def favicon() -> Any:
-        return app.send_static_file(filename='img/favicon.ico')
 
     return app

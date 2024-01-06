@@ -5,9 +5,9 @@ from src.database.enums import PostGroup
 from src.utils import save_picture
 
 
-def serialize_post_form(form_data: dict[str, Any],
-                        post_group: PostGroup,
-                        creator_id: UUID) -> dict[str, Any]:
+def prepare_post_data(form_data: dict[str, Any],
+                      post_group: PostGroup,
+                      creator_id: UUID) -> dict[str, Any]:
     for key in ['submit', 'csrf_token']:
         if key in form_data:
             form_data.pop(key)
@@ -15,7 +15,7 @@ def serialize_post_form(form_data: dict[str, Any],
     if form_data['picture']:
         pic_name = save_picture(picture=form_data['picture'],
                                 img_catalog='postimages',
-                                size=(900, 400))
+                                img_size=(900, 400))
         form_data['picture'] = pic_name
     else:
         form_data.pop('picture')
@@ -30,9 +30,9 @@ def serialize_post_form(form_data: dict[str, Any],
     return form_data
 
 
-def serialize_com_form(form_data: dict[str, Any],
-                       post_id: UUID,
-                       creator_id: UUID) -> dict[str, Any]:
+def prepare_com_data(form_data: dict[str, Any],
+                     post_id: UUID,
+                     creator_id: UUID) -> dict[str, Any]:
     for key in ['submit', 'csrf_token']:
         if key in form_data:
             form_data.pop(key)

@@ -13,9 +13,22 @@ services:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_DB=${PG_DB}
     ports:
-        - ${PG_PORT}:${PG_PORT}
+      - ${PG_PORT}:${PG_PORT}
     expose:
-        - ${PG_PORT}
+      - ${PG_PORT}
+    networks:
+      - custom
+
+  redis:
+    container_name: flaskblog-redis
+    image: redis:7.2.3
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    expose:
+      - ${REDIS_PORT}
     networks:
       - custom
 
@@ -32,8 +45,23 @@ services:
       - ${PORT}
     depends_on:
       - postgres
+      - redis
     networks:
       - custom
+
+  worker:
+    container_name: flaskblog-celery
+    build: .
+    command: "sh -c 'celery -A wsgi.celery_app worker --loglevel WARNING'"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+    networks:
+      - custom
+
 
 networks:
 

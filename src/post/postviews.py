@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, abort, request, Blueprint
 from flask_login import current_user, login_required
 
 from src.database.enums import PostGroup, UserStatus, PostCategory
-from src.post.postutils import serialize_post_form, serialize_com_form
+from src.post.postutils import prepare_post_data, prepare_com_data
 from src.post.postwtforms import PostCreateForm, PostUpdateForm, CommentCreateForm
 from src.post.postservice import (get_posts_pgn,
                                   get_post_db,
@@ -63,11 +63,13 @@ def create_post() -> Any:
 
     form = PostCreateForm()
     if form.validate_on_submit():
-        post_data = serialize_post_form(form_data=form.data,
-                                        post_group=PostGroup(post_group),
-                                        creator_id=current_user.id)
+
+        post_data = prepare_post_data(form_data=form.data,
+                                      post_group=PostGroup(post_group),
+                                      creator_id=current_user.id)
         add_post_db(post_data=post_data)
         return redirect(url_for('posts.show_posts', post_group=post_group))
+
     return render_template('post/createpost.html', form=form, post_group=post_group)
 
 
@@ -80,10 +82,14 @@ def show_article_detail(post_id: UUID) -> Any:
 
     form = CommentCreateForm()
     if form.validate_on_submit():
-        com_data = serialize_com_form(form_data=form.data,
-                                      post_id=post.id,
-                                      creator_id=current_user.id)
+
+        if not current_user.is_authenticated:
+            abort(403)
+        com_data = prepare_com_data(form_data=form.data,
+                                    post_id=post.id,
+                                    creator_id=current_user.id)
         add_com_db(post=post, com_data=com_data)
+
     return render_template('post/articledetail.html', article=post, form=form)
 
 
@@ -108,14 +114,16 @@ def update_post(post_id: UUID) -> Any:
 
     form = PostUpdateForm()
     if form.validate_on_submit():
+
         old_pic_name = post.picture
-        upd_post_data = serialize_post_form(form_data=form.data,
-                                            post_group=post.group,
-                                            creator_id=current_user.id)
+        upd_post_data = prepare_post_data(form_data=form.data,
+                                          post_group=post.group,
+                                          creator_id=current_user.id)
         upd_post_db(post=post, upd_data=upd_post_data)
         if upd_post_data.get('picture'):
             delete_picture(pic_name=old_pic_name, img_catalog='postimages')
         return redirect(redirect_url)
+
     return render_template('post/updatepost.html', form=form, post=post)
 
 

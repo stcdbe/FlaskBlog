@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 
 from src.database.enums import UserStatus
 from src.user.userservice import get_user_by_username_db, update_user_db, get_users_pgn
-from src.user.userutils import serialize_profile_form
+from src.user.userutils import prepare_profile_data
 from src.user.userwtforms import ProfileUpdateForm
 from src.utils import delete_picture
 
@@ -40,8 +40,9 @@ def update_user_profile(username: str) -> Any:
 
     form = ProfileUpdateForm()
     if form.validate_on_submit():
+
         old_pic_name = user.picture
-        upd_user_data = serialize_profile_form(form_data=form.data)
+        upd_user_data = prepare_profile_data(form_data=form.data)
         upd_user = update_user_db(user=user, upd_data=upd_user_data)
         if upd_user_data.get('picture'):
             delete_picture(pic_name=old_pic_name, img_catalog='profileimages')
