@@ -48,16 +48,18 @@ def create_user_db(user_data: dict[str, Any]) -> User | None:
         return new_user
     except IntegrityError:
         db.session.rollback()
-        return
 
 
-def update_user_db(user: User, upd_data: dict[str, Any]) -> User:
+def update_user_db(user: User, upd_data: dict[str, Any]) -> User | None:
     for key, val in upd_data.items():
         setattr(user, key, val)
 
-    db.session.commit()
-    db.session.refresh(user)
-    return user
+    try:
+        db.session.commit()
+        db.session.refresh(user)
+        return user
+    except IntegrityError:
+        db.session.rollback()
 
 
 def get_users_pgn(user_status: UserStatus,

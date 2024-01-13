@@ -10,13 +10,13 @@ from wtforms.validators import DataRequired, Length, Optional
 
 from src.database.dbmodels import User, Post
 from src.database.enums import UserStatus
-from src.utils import delete_picture
-from src.user.userservice import count_all_users_db
 from src.post.postservice import count_all_posts_db, count_all_comments_db
+from src.user.userservice import count_all_users_db
+from src.utils import delete_picture
 
 
 class DashboardView(AdminIndexView):
-    def is_accessible(self) -> bool:
+    def is_accessible(self) -> bool | None:
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
@@ -35,7 +35,7 @@ class DashboardView(AdminIndexView):
 
 
 class UserView(ModelView):
-    def is_accessible(self) -> bool:
+    def is_accessible(self) -> bool | None:
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
@@ -52,21 +52,21 @@ class UserView(ModelView):
     edit_modal = True
     column_descriptions = {'status': '''Default - can leave comments;
                                         Author - can create, update posts;
-                                        Admin - access to the admin panel'''}
-    column_editable_list = ['status',]
+                                        Admin - access to the admin panel;'''}
+    column_editable_list = ['status', ]
     form_columns = ('status',)
     can_view_details = True
     details_modal = True
     column_display_pk = True
     column_list = ('id', 'username', 'email', 'status', 'join_date', 'picture',)
-    column_details_exclude_list = ['password',]
+    column_details_exclude_list = ['password', ]
     column_sortable_list = ('username', 'email', 'join_date',)
-    column_searchable_list = ['id', 'username', 'email', 'join_date',]
+    column_searchable_list = ['id', 'username', 'email', 'join_date', ]
     column_formatters = {'picture': show_picture}
 
 
 class PostView(ModelView):
-    def is_accessible(self) -> bool:
+    def is_accessible(self) -> bool | None:
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
@@ -95,12 +95,12 @@ class PostView(ModelView):
     column_display_pk = True
     column_list = ('id', 'title', 'group', 'category', 'user_id', 'created_at', 'picture',)
     column_sortable_list = ('title', 'created_at',)
-    column_searchable_list = ['id', 'title', 'category', 'user_id', 'created_at',]
+    column_searchable_list = ['id', 'title', 'category', 'user_id', 'created_at', ]
     column_formatters = {'picture': show_picture}
 
 
 class CommentView(ModelView):
-    def is_accessible(self) -> bool:
+    def is_accessible(self) -> bool | None:
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
@@ -114,6 +114,6 @@ class CommentView(ModelView):
     details_modal = True
     column_display_pk = True
     column_list = ('id', 'post_id', 'user_id', 'text', 'created_at',)
-    column_details_list = ['id', 'post_id', 'user_id', 'text', 'created_at',]
+    column_details_list = ['id', 'post_id', 'user_id', 'text', 'created_at', ]
     column_sortable_list = ('created_at',)
-    column_searchable_list = ['id', 'post_id', 'user_id', 'created_at',]
+    column_searchable_list = ['id', 'post_id', 'user_id', 'created_at', ]

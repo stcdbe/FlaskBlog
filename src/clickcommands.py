@@ -14,7 +14,7 @@ def create_superuser(username: str, email: str, password: str) -> None:
         if len(val) not in range(6, 101):
             click.echo(f'Length of {val} not in range 6-100 characters')
             return
-    hashed_psw = generate_password_hash(password=password, method='pbkdf2:sha512')
+    hashed_psw = generate_password_hash(password=password)
     superuser_data = {'username': username,
                       'email': email,
                       'password': hashed_psw,

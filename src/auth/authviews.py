@@ -8,10 +8,10 @@ from flask_login import current_user, login_user, login_required, logout_user
 from jwt import InvalidTokenError, ExpiredSignatureError, DecodeError
 from werkzeug.security import check_password_hash
 
+from src.auth.authutils import prepare_user_data, prepare_reset_psw_data
+from src.auth.authwtforms import LoginForm, RegistrationForm, PasswordForgotForm, PasswordResetForm
 from src.config import RESET_PSW_TOKEN_EXPIRES
 from src.user.userservice import get_user_by_uname_or_email_db, create_user_db, get_user_db, update_user_db
-from src.auth.authwtforms import LoginForm, RegistrationForm, PasswordForgotForm, PasswordResetForm
-from src.auth.authutils import prepare_user_data, prepare_reset_psw_data
 from src.utils import send_email
 
 
@@ -22,8 +22,8 @@ auth_router = Blueprint('auth',
                         url_prefix='/auth')
 
 
-@auth_router.route('/signin', methods=['GET', 'POST'])
-def signin() -> Any:
+@auth_router.route('/login', methods=['GET', 'POST'])
+def login() -> Any:
     if current_user.is_authenticated:
         return redirect(url_for('main.show_main_page'))
 
@@ -80,7 +80,7 @@ def forgot_password() -> Any:
                              email_receivers=[user.email],
                              email_body=email_body)
             flash('Further instructions have been sent to your email address.', 'primary')
-            return redirect(url_for('auth.signin'))
+            return redirect(url_for('auth.login'))
 
         flash('Invalid email address.', 'danger')
     return render_template('auth/forgotpassword.html', form=form)
@@ -107,15 +107,15 @@ def reset_password(token: str) -> Any:
 
     form = PasswordResetForm()
     if form.validate_on_submit():
-
         upd_psw_data = prepare_reset_psw_data(password=form.password.data)
         update_user_db(user=user, upd_data=upd_psw_data)
-        url = request.host_url + 'forgot_password'
-        email_body = render_template('email/infopswemail.html', user=user, url=url)
+        email_body = render_template('email/infopswemail.html',
+                                     user=user,
+                                     url=request.host_url + 'forgot_password')
         send_email.delay(email_subject='(Flask Blog) Your password was reset',
                          email_receivers=[user.email],
                          email_body=email_body)
         flash('The new password has been confirmed.', 'primary')
-        return redirect(url_for('auth.signin'))
+        return redirect(url_for('auth.login'))
 
     return render_template('auth/newpassword.html', form=form, token=token)

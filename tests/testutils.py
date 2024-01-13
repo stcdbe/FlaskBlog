@@ -10,11 +10,11 @@ from src.user.userservice import create_user_db
 
 
 class AuthActions:
-    def __init__(self, client: FlaskClient):
+    def __init__(self, client: FlaskClient) -> None:
         self._client = client
 
     def create(self, email: str = TEST_EMAIL_RECEIVER, password: str = 'Password123') -> None:
-        hashed_psw = generate_password_hash(password=password, method='pbkdf2:sha512')
+        hashed_psw = generate_password_hash(password=password)
         auth_user_data = {'username': 'auth_username',
                           'email': email,
                           'password': hashed_psw,
@@ -23,11 +23,8 @@ class AuthActions:
             create_user_db(user_data=auth_user_data)
 
     def login(self, email: str = TEST_EMAIL_RECEIVER, password: str = 'Password123') -> TestResponse:
-        auth_data = {'username_or_email': email,
-                     'password': password,
-                     'remember': False,
-                     'submit': True}
-        return self._client.post('/auth/signin', data=auth_data)
+        auth_data = {'username_or_email': email, 'password': password}
+        return self._client.post('/auth/login', data=auth_data)
 
     def logout(self) -> TestResponse:
         return self._client.get('/auth/logout')

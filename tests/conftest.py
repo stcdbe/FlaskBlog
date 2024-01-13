@@ -4,8 +4,8 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
-from src.config import TestSettings
 from src import create_app, db
+from src.config import TestSettings
 from tests.testutils import AuthActions
 
 

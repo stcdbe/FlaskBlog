@@ -6,7 +6,7 @@
 
 {% block formfields %}
 <h2 class="text-uppercase text-center mb-5">Sign in</h2>
-<form method="post" action="{{ url_for('auth.signin') }}">
+<form method="post" action="{{ url_for('auth.login') }}">
   {{ form.hidden_tag() }}
 
   {% for cat, msg in get_flashed_messages(True) %}

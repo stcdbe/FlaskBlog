@@ -1,14 +1,14 @@
 from uuid import UUID
 
 from flask import Flask
+from flask_admin import Admin
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
-from src.database.dbmodels import BaseModel, User, Post, Comment
 from src.celery import celery_init_app
+from src.database.dbmodels import BaseModel, User, Post, Comment
 
 
 login_manager = LoginManager()

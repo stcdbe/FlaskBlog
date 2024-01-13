@@ -1,13 +1,13 @@
 import logging
 import os
-from pathlib import Path
 import smtplib
 from email.message import EmailMessage
+from pathlib import Path
 from secrets import token_urlsafe
 
 from PIL import Image
-from werkzeug.datastructures.file_storage import FileStorage
 from celery import shared_task
+from werkzeug.datastructures.file_storage import FileStorage
 
 from src.config import EMAIL_SENDER, EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD, EMAIL_USERNAME
 

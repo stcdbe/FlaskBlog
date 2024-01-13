@@ -5,8 +5,6 @@ from flask import render_template, redirect, url_for, abort, request, Blueprint
 from flask_login import current_user, login_required
 
 from src.database.enums import PostGroup, UserStatus, PostCategory
-from src.post.postutils import prepare_post_data, prepare_com_data
-from src.post.postwtforms import PostCreateForm, PostUpdateForm, CommentCreateForm
 from src.post.postservice import (get_posts_pgn,
                                   get_post_db,
                                   add_post_db,
@@ -14,6 +12,8 @@ from src.post.postservice import (get_posts_pgn,
                                   add_com_db,
                                   search_posts_db,
                                   del_post_db)
+from src.post.postutils import prepare_post_data, prepare_com_data
+from src.post.postwtforms import PostCreateForm, PostUpdateForm, CommentCreateForm
 from src.utils import delete_picture
 
 
@@ -63,7 +63,6 @@ def create_post() -> Any:
 
     form = PostCreateForm()
     if form.validate_on_submit():
-
         post_data = prepare_post_data(form_data=form.data,
                                       post_group=PostGroup(post_group),
                                       creator_id=current_user.id)
