@@ -21,7 +21,7 @@ def get_user_db(user_id: UUID) -> User | None:
     try:
         return (db.session.execute(stmt)).scalars().first()
     except (DBAPIError, DataError):
-        return
+        db.session.rollback()
 
 
 def get_user_by_username_db(username: str) -> User | None:
@@ -40,7 +40,8 @@ def create_user_db(user_data: dict[str, Any]) -> User | None:
     new_user = User()
 
     for key, val in user_data.items():
-        setattr(new_user, key, val)
+        if hasattr(new_user, key):
+            setattr(new_user, key, val)
 
     try:
         db.session.add(new_user)
@@ -52,7 +53,8 @@ def create_user_db(user_data: dict[str, Any]) -> User | None:
 
 def update_user_db(user: User, upd_data: dict[str, Any]) -> User | None:
     for key, val in upd_data.items():
-        setattr(user, key, val)
+        if hasattr(user, key):
+            setattr(user, key, val)
 
     try:
         db.session.commit()

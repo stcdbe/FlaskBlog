@@ -40,7 +40,8 @@ class User(BaseModel, UserMixin):
 
 class Post(BaseModel):
     __tablename__ = 'post'
-    title: Mapped[str] = mapped_column(index=True)
+    title: Mapped[str] = mapped_column(index=True, unique=True)
+    slug: Mapped[str] = mapped_column(index=True, unique=True)
     intro: Mapped[str | None]
     text: Mapped[str] = mapped_column(Text)
     picture: Mapped[str]

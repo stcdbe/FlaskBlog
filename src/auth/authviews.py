@@ -8,7 +8,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from jwt import InvalidTokenError, ExpiredSignatureError, DecodeError
 from werkzeug.security import check_password_hash
 
-from src.auth.authutils import prepare_user_data, prepare_reset_psw_data
+from src.auth.authutils import prepare_registration_data, prepare_reset_psw_data
 from src.auth.authwtforms import LoginForm, RegistrationForm, PasswordForgotForm, PasswordResetForm
 from src.config import RESET_PSW_TOKEN_EXPIRES
 from src.user.userservice import get_user_by_uname_or_email_db, create_user_db, get_user_db, update_user_db
@@ -47,7 +47,7 @@ def registration() -> Any:
     form = RegistrationForm()
     if form.validate_on_submit():
 
-        user_data = prepare_user_data(form_data=form.data)
+        user_data = prepare_registration_data(form_data=form.data)
         if new_user := create_user_db(user_data=user_data):
             login_user(new_user, remember=form.remember.data)
             return redirect(url_for('main.show_main_page'))

@@ -11,12 +11,14 @@
         <div class="col-md-8 col-md-offset-2">
             <h2>Update post</h2>
 
-            {% block form %}
-            <form method="post" action="{{ url_for('posts.update_post', post_id=post.id) }}" enctype="multipart/form-data">
-                {% endblock %}
+            <form method="post" action="{{ url_for('posts.update_post', post_slug=post.slug) }}" enctype="multipart/form-data">
 
                 {{ form.hidden_tag() }}
-
+                {% for cat, msg in get_flashed_messages(True) %}
+                <div class="alert alert-{{ cat }}" role="alert">
+                  <h6><b>{{ msg }}</b></h6>
+                </div>
+                {% endfor %}
                 {% for field, errors in form.errors.items() %}
                 <div class="alert alert-primary" role="alert">
                     <h6><b>{{ ', '.join(errors) }}</b></h6>
@@ -25,7 +27,12 @@
 
                 <div class="form-group">
                     <label>{{ form.title.label }}</label>
-                    {{ form.title(class="form-control", placeholder="100 characters max", value=post.title)}}
+                    {{ form.title(class="form-control", placeholder="100 characters max", value=post.title) }}
+                </div>
+
+                <div class="form-group">
+                  <label>{{ form.group.label }} <span class="require">*</span></label>
+                  {{ form.group(class="form-control", disabled=True) }}
                 </div>
 
                 <div class="form-group">
@@ -33,13 +40,11 @@
                     {{ form.category(class="form-control", selected=post.category) }}
                 </div>
 
-                {% if post.group == 'articles' %}
                 <div class="form-group">
                     <label>Current {{ form.intro.label }}</label>
                     <textarea id="intro" name="intro" rows="5" class="form-control"
-                        maxlength="300">{{ post.intro }}</textarea>
+                        maxlength="300">{% if post.intro %}{{ post.intro }}{% endif %}</textarea>
                 </div>
-                {% endif %}
 
                 <div class="form-group">
                     <label>Current image</label>

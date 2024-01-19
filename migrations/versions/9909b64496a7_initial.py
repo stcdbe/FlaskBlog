@@ -42,6 +42,7 @@ def upgrade():
 
     op.create_table('post',
     sa.Column('title', sa.String(), nullable=False),
+    sa.Column('slug', sa.String(), nullable=False),
     sa.Column('intro', sa.String(), nullable=True),
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('picture', sa.String(), nullable=False),
@@ -55,7 +56,8 @@ def upgrade():
     )
     with op.batch_alter_table('post', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_post_id'), ['id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_post_title'), ['title'], unique=False)
+        batch_op.create_index(batch_op.f('ix_post_slug'), ['slug'], unique=True)
+        batch_op.create_index(batch_op.f('ix_post_title'), ['title'], unique=True)
 
     op.create_table('comment',
     sa.Column('text', sa.String(), nullable=False),
@@ -81,6 +83,7 @@ def downgrade():
     op.drop_table('comment')
     with op.batch_alter_table('post', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_post_title'))
+        batch_op.drop_index(batch_op.f('ix_post_slug'))
         batch_op.drop_index(batch_op.f('ix_post_id'))
 
     op.drop_table('post')

@@ -61,40 +61,40 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.request.path == '/'
 
 
-# def test_forgot_password(client: FlaskClient, auth: AuthActions) -> None:
-#     auth.logout()
-#
-#     res_get = client.get('/auth/forgot_password')
-#     assert res_get.status_code == 200
-#     assert res_get.request.path == '/auth/forgot_password'
-#
-#     data = {'username_or_email': 'auth_username'}
-#     res_post = client.post('/auth/forgot_password',
-#                            data=data,
-#                            follow_redirects=True)
-#     assert res_post.status_code == 200
-#     assert len(res_post.history) == 1
-#     assert res_post.request.path == '/auth/login'
-#
-#
-# def test_reset_password(client: FlaskClient,
-#                         auth: AuthActions,
-#                         app: Flask) -> None:
-#     auth.logout()
-#
-#     with app.app_context():
-#         user = get_user_by_username_db(username='auth_username')
-#         token = create_access_token(identity=str(user.id),
-#                                     expires_delta=timedelta(minutes=RESET_PSW_TOKEN_EXPIRES))
-#
-#     res_get = client.get('/auth/reset_password/' + token)
-#     assert res_get.status_code == 200
-#     assert res_get.request.path == '/auth/reset_password/' + token
-#
-#     data = {'password': 'Password123', 'repeat_password': 'Password123'}
-#     res_post = client.post('/auth/reset_password/' + token,
-#                            data=data,
-#                            follow_redirects=True)
-#     assert res_post.status_code == 200
-#     assert len(res_post.history) == 1
-#     assert res_post.request.path == '/auth/login'
+def test_forgot_password(client: FlaskClient, auth: AuthActions) -> None:
+    auth.logout()
+
+    res_get = client.get('/auth/forgot_password')
+    assert res_get.status_code == 200
+    assert res_get.request.path == '/auth/forgot_password'
+
+    data = {'username_or_email': 'auth_username'}
+    res_post = client.post('/auth/forgot_password',
+                           data=data,
+                           follow_redirects=True)
+    assert res_post.status_code == 200
+    assert len(res_post.history) == 1
+    assert res_post.request.path == '/auth/login'
+
+
+def test_reset_password(client: FlaskClient,
+                        auth: AuthActions,
+                        app: Flask) -> None:
+    auth.logout()
+
+    with app.app_context():
+        user = get_user_by_username_db(username='auth_username')
+        token = create_access_token(identity=str(user.id),
+                                    expires_delta=timedelta(minutes=RESET_PSW_TOKEN_EXPIRES))
+
+    res_get = client.get('/auth/reset_password/' + token)
+    assert res_get.status_code == 200
+    assert res_get.request.path == '/auth/reset_password/' + token
+
+    data = {'password': 'Password123', 'repeat_password': 'Password123'}
+    res_post = client.post('/auth/reset_password/' + token,
+                           data=data,
+                           follow_redirects=True)
+    assert res_post.status_code == 200
+    assert len(res_post.history) == 1
+    assert res_post.request.path == '/auth/login'

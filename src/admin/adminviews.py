@@ -39,22 +39,21 @@ class UserView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: Any, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
         abort(404)
 
-    def show_picture(self, context: Context, model: User, name: Any) -> Markup:
+    def show_picture(self, context: Context, model: User, name: str) -> Markup:
         url = url_for('static', filename='img/profileimages/' + model.picture)
         return Markup(f'<img src="{url}" width="100">')
 
     page_size = 12
     can_create = False
     can_delete = False
+    can_edit = False
     edit_modal = True
     column_descriptions = {'status': '''Default - can leave comments;
                                         Author - can create, update posts;
                                         Admin - access to the admin panel;'''}
-    column_editable_list = ['status', ]
-    form_columns = ('status',)
     can_view_details = True
     details_modal = True
     column_display_pk = True
@@ -70,10 +69,10 @@ class PostView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: Any, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
         abort(404)
 
-    def show_picture(self, context: Context, model: Post, name: Any) -> Markup:
+    def show_picture(self, context: Context, model: Post, name: str) -> Markup:
         url = url_for('static', filename='img/postimages/' + model.picture)
         return Markup(f'<img src="{url}" width="200">')
 
@@ -83,10 +82,8 @@ class PostView(ModelView):
     page_size = 12
     can_create = False
     edit_modal = True
-    form_columns = ('title', 'intro', 'text', 'group', 'category',)
-    form_args = {'title': {'label': 'Title',
-                           'validators': [DataRequired(), Length(min=10, max=100)]},
-                 'intro': {'label': 'Intro',
+    form_columns = ('intro', 'text', 'group', 'category',)
+    form_args = {'intro': {'label': 'Intro',
                            'validators': [Optional(), Length(max=300)]},
                  'text': {'label': 'Text',
                           'validators': [DataRequired(), Length(min=10, max=5000)]}}
@@ -104,7 +101,7 @@ class CommentView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: Any, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
         abort(404)
 
     page_size = 12

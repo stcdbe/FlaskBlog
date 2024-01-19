@@ -22,6 +22,9 @@
           <li><a class="nav-link px-2 text-white" href="{{ url_for('posts.show_posts', post_group='articles') }}">Articles</a>
           <li><a class="nav-link px-2 text-white" href="{{ url_for('posts.show_posts', post_group='news') }}">News</a></li>
           <li><a class="nav-link px-2 text-white" href="{{ url_for('users.show_authors') }}">Authors</a></li>
+          {% if current_user.is_authenticated and current_user.status in ['Admin', 'Author'] %}
+          <li><a class="nav-link px-2 text-white" href="{{ url_for('posts.create_post')}}">Create a post</a></li>
+          {% endif %}
           {% if current_user.is_authenticated and current_user.status == 'Admin' %}
           <li><a class="nav-link px-2 text-white" href="/admin">AdminDashboard</a></li>
           {% endif %}

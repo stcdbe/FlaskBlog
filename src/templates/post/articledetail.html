@@ -1,7 +1,7 @@
 {% extends 'basepost.html' %}
 
 {% block title %}
-<title>{{ article.title }}</title>
+<title>{{ post.title }}</title>
 {% endblock %}
 
 {% block category %}
@@ -9,15 +9,10 @@
     <nav class="nav" aria-label="Secondary navigation">
         <li><a href="{{ url_for('posts.show_posts', post_group='articles') }}" class="nav-link text-black">All</a></li>
         {% for category in ['Development', 'Administration', 'Design', 'Management', 'Marketing', 'Science'] %}
-        <li><a href="{{ url_for('posts.show_posts', posts_group='articles', category=category) }}"
+        <li><a href="{{ url_for('posts.show_posts', post_group='articles', category=category) }}"
                 class="nav-link text-black">{{
                 category }}</a></li>
         {% endfor %}
-        {% if current_user.is_authenticated and current_user.status in ['Author', 'Author'] %}
-        <li><a href="{{ url_for('posts.create_post', post_group='articles')}}" class="nav-link text-black">Write an
-                article</a>
-        </li>
-        {% endif %}
     </nav>
 </div>
 {% endblock %}
@@ -29,35 +24,36 @@
             <article>
                 <header class="mb-4">
                     <div style="white-space: pre-wrap; word-wrap: break-word;">
-                        <h1 class="fw-bolder mb-1">{{ article.title }}</h1>
+                        <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
                     </div>
-                    <div class="text-muted fst-italic mb-2">Posted on {{ article.created_at.strftime('%Y-%m-%d
+                    <div class="text-muted fst-italic mb-2">Posted on {{ post.created_at.strftime('%Y-%m-%d
                         %H:%M:%S') }}
                     </div>
                     <a class="badge bg-secondary text-decoration-none link-light"
-                        href="{{ url_for('posts.show_posts', post_group='articles', category=article.category.value) }}">{{
-                        article.category.value }}</a>
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=post.category.value) }}">{{
+                        post.category.value }}</a>
                 </header>
-                {% if article.intro %}
+                {% if post.intro %}
                 <div style="white-space: pre-wrap; word-wrap: break-word;">
-                    <p>{{ article.intro }}</p>
+                    <p>{{ post.intro }}</p>
                 </div>
                 {% endif %}
                 <figure class="mb-4"><img class="img-fluid rounded"
-                        src="{{ url_for('static', filename='img/postimages/' + article.picture) }}" alt="">
+                        src="{{ url_for('static', filename='img/postimages/' + post.picture) }}" alt="">
                 </figure>
                 <section class="mb-5">
-                    <div style="white-space: pre-wrap; word-wrap: break-word;">{{ article.text }}</div>
-                    {% if current_user.id == article.user_id %}
+                    <div style="white-space: pre-wrap; word-wrap: break-word;">{{ post.text }}</div>
+                    {% if current_user.id == post.user_id %}
                     <form>
-                        <button type="submit" formaction="{{ url_for('posts.update_post', post_id=article.id) }}"
+                        <button type="submit" formaction="{{ url_for('posts.update_post', post_slug=post.slug) }}"
                             class="btn btn-sm btn-primary active">Update</button>
-                        <button type="submit" formaction="{{ url_for('posts.delete_post', post_id=article.id) }}"
+                        <button type="submit" formaction="{{ url_for('posts.delete_post', post_slug=post.slug) }}"
                             formmethod="post" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                     {% endif %}
                 </section>
             </article>
+            {% if post.group.value == 'articles' %}
             <section class="mb-5">
                 <div class="card bg-light">
                     <div class="card-body">
@@ -68,7 +64,7 @@
                         {% endfor %}
                         {% if current_user.is_authenticated %}
                         <form class="mb-4" method="post"
-                            action="{{ url_for('posts.show_article_detail', post_id=article.id) }}"
+                            action="{{ url_for('posts.show_post_detail', post_slug=post.slug) }}"
                             enctype="multipart/form-data">
                             {{ form.hidden_tag() }}
                             <textarea id="text" name="text" rows="3" placeholder="250 characters max"
@@ -87,26 +83,27 @@
                             </div>
                         </div>
                         {% endif %}
-                        {% if article.comments %}
-                        {% for comment in article.comments %}
-                        <div class="d-flex mt-4">
-                            <div class="flex-shrink-0"><img class="rounded-circle"
-                                    src="{{ url_for('static', filename='img/profileimages/' + comment.user.picture) }}"
-                                    width="50" alt="..."></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">
-                                    <a href="{{ url_for('users.get_user_profile', username=comment.user.username) }}">{{
-                                        comment.user.username }}</a>
+                        {% if post.comments %}
+                            {% for comment in post.comments %}
+                            <div class="d-flex mt-4">
+                                <div class="flex-shrink-0"><img class="rounded-circle"
+                                        src="{{ url_for('static', filename='img/profileimages/' + comment.user.picture) }}"
+                                        width="50" alt="..."></div>
+                                <div class="ms-3">
+                                    <div class="fw-bold">
+                                        <a href="{{ url_for('users.get_user_profile', username=comment.user.username) }}">{{
+                                            comment.user.username }}</a>
+                                    </div>
+                                    <div class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                                    <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ comment.text }}</div>
                                 </div>
-                                <div class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-                                <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ comment.text }}</div>
                             </div>
-                        </div>
-                        {% endfor %}
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>
             </section>
+        {% endif %}
         </div>
         <div class="col-lg-4">
             <div class="card mb-4">
@@ -114,11 +111,11 @@
                 <div class="card-body">
                     <div class="d-flex mt-4">
                         <div class="flex-shrink-0"><img class="rounded-circle"
-                                src="{{ url_for('static', filename='img/profileimages/' + article.user.picture) }}"
-                                width="50" alt="article.user.picture"></div>
+                                src="{{ url_for('static', filename='img/profileimages/' + post.user.picture) }}"
+                                width="50" alt="post.user.picture"></div>
                         <div class="ms-3">
-                            <b><a href="{{ url_for('users.get_user_profile', username=article.user.username ) }}">{{
-                                    article.user.username }}</a></b>
+                            <b><a href="{{ url_for('users.get_user_profile', username=post.user.username ) }}">{{
+                                    post.user.username }}</a></b>
                         </div>
                     </div>
                 </div>

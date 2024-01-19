@@ -15,20 +15,19 @@ def test_show_posts(client: FlaskClient) -> None:
 def test_create_post(client: FlaskClient,
                      auth: AuthActions,
                      app: Flask) -> None:
-    params = {'post_group': PostGroup.articles.value}
     auth.login()
 
-    res_get = client.get('/posts/create', query_string=params)
+    res_get = client.get('/posts/create')
     assert res_get.status_code == 200
     assert res_get.request.path == '/posts/create'
 
     post_data = {'title': 'test_title',
+                 'group': PostGroup.articles,
+                 'category': PostCategory.Development,
                  'intro': 'test_intro',
                  'text': 'test_long_text',
-                 'category': PostCategory.Development,
                  'picture': (get_test_pic_path(pic_name='test.jpeg')).open('rb')}
     res_post = client.post('/posts/create',
-                           query_string=params,
                            data=post_data,
                            follow_redirects=True)
     assert res_post.status_code == 200
@@ -42,22 +41,22 @@ def test_create_post(client: FlaskClient,
             assert post.__getattribute__(key) == val
 
 
-def test_show_article_detail(app: Flask,
-                             client: FlaskClient,
-                             auth: AuthActions) -> None:
+def test_show_post_detail(app: Flask,
+                          client: FlaskClient,
+                          auth: AuthActions) -> None:
     auth.login()
 
     with app.app_context():
         post = get_post_by_title_db(title='test_title')
 
-    res_get = client.get(f'/posts/{str(post.id)}')
+    res_get = client.get(f'/posts/{post.slug}')
     assert res_get.status_code == 200
-    assert res_get.request.path == f'/posts/{str(post.id)}'
+    assert res_get.request.path == f'/posts/{post.slug}'
 
     com_data = {'text': 'test_comment_text'}
-    res_post = client.post(f'/posts/{str(post.id)}', data=com_data)
+    res_post = client.post(f'/posts/{post.slug}', data=com_data)
     assert res_post.status_code == 200
-    assert res_post.request.path == f'/posts/{str(post.id)}'
+    assert res_post.request.path == f'/posts/{post.slug}'
     with app.app_context():
         com = get_com_by_text_db(text=com_data['text'])
     assert com
@@ -72,21 +71,21 @@ def test_update_post(client: FlaskClient,
     with app.app_context():
         post = get_post_by_title_db(title='test_title')
 
-    res_get = client.get(f'/posts/{str(post.id)}/update')
+    res_get = client.get(f'/posts/{post.slug}/update')
     assert res_get.status_code == 200
-    assert res_get.request.path == f'/posts/{str(post.id)}/update'
+    assert res_get.request.path == f'/posts/{post.slug}/update'
 
     upd_post_data = {'title': 'test_title',
+                     'category': PostCategory.Administration,
                      'intro': 'new_test_intro',
                      'text': 'new_test_long_text',
-                     'category': PostCategory.Administration,
                      'picture': (get_test_pic_path(pic_name='test.jpeg')).open('rb')}
-    res_post = client.post(f'/posts/{str(post.id)}/update',
+    res_post = client.post(f'/posts/{post.slug}/update',
                            data=upd_post_data,
                            follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
-    assert res_post.request.path == f'/posts/{str(post.id)}'
+    assert res_post.request.path == '/posts'
     with app.app_context():
         upd_post = get_post_by_title_db(title=upd_post_data['title'])
     assert upd_post
@@ -103,7 +102,7 @@ def test_delete_post(client: FlaskClient,
     with app.app_context():
         post = get_post_by_title_db(title='test_title')
 
-    res_post = client.post(f'/posts/{str(post.id)}/delete', follow_redirects=True)
+    res_post = client.post(f'/posts/{post.slug}/delete', follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
     assert res_post.request.path == '/posts'

@@ -4,10 +4,6 @@ from src.utils import save_picture
 
 
 def prepare_profile_data(form_data: dict[str, Any]) -> dict[str, Any]:
-    for key in ['submit', 'csrf_token']:
-        if key in form_data:
-            form_data.pop(key)
-
     if form_data.get('picture'):
         pic_name = save_picture(picture=form_data['picture'],
                                 img_catalog='profileimages',

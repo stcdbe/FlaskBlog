@@ -3,7 +3,7 @@ from flask_wtf.file import FileAllowed, FileSize, FileField, FileRequired
 from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import Length, DataRequired, Optional
 
-from src.database.enums import PostCategory
+from src.database.enums import PostCategory, PostGroup
 
 
 class PostCreateForm(FlaskForm):
@@ -21,6 +21,8 @@ class PostCreateForm(FlaskForm):
                          validators=[DataRequired(message='Text field is empty.'),
                                      Length(min=10,
                                             message='Text cannot be shorter than 10 characters')])
+    group = SelectField('Post group',
+                        choices=[(choice.name, choice.value.capitalize()) for choice in PostGroup])
     category = SelectField('Category',
                            choices=[(choice.name, choice.value) for choice in PostCategory])
     picture = FileField('Picture in .jpg .jpeg or .png format. Max file size 10MB.',
