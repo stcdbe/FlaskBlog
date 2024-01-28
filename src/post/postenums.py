@@ -1,12 +1,6 @@
 from enum import Enum
 
 
-class UserStatus(str, Enum):
-    Default = 'Default'
-    Author = 'Author'
-    Admin = 'Admin'
-
-
 class PostGroup(str, Enum):
     articles = 'articles'
     news = 'news'

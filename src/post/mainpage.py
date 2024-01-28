@@ -2,7 +2,7 @@ from typing import Any
 
 from flask import render_template, Blueprint
 
-from src.database.enums import PostGroup
+from src.post.postenums import PostGroup
 from src.post.postservice import get_some_posts_db
 
 
@@ -19,6 +19,6 @@ def favicon() -> Any:
 
 @main_page_router.get('/')
 def show_main_page() -> Any:
-    articles = get_some_posts_db(post_group=PostGroup.articles, size=7)
-    news = get_some_posts_db(post_group=PostGroup.news, size=10)
+    articles = get_some_posts_db(size=7, group=PostGroup.articles)
+    news = get_some_posts_db(size=10, group=PostGroup.news)
     return render_template('post/mainpage.html', articles=articles, news=news)

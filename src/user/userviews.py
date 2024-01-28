@@ -3,8 +3,8 @@ from typing import Any
 from flask import Blueprint, render_template, abort, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 
-from src.database.enums import UserStatus
-from src.user.userservice import get_user_by_username_db, update_user_db, get_users_pgn
+from src.user.userenums import UserStatus
+from src.user.userservice import get_user_db, update_user_db, get_users_pgn
 from src.user.userutils import prepare_profile_data
 from src.user.userwtforms import ProfileUpdateForm
 from src.utils import delete_picture
@@ -19,7 +19,7 @@ user_router = Blueprint('users',
 
 @user_router.get('/<username>')
 def get_user_profile(username: str) -> Any:
-    user = get_user_by_username_db(username=username)
+    user = get_user_db(username=username)
 
     if not user:
         abort(404)
@@ -30,7 +30,7 @@ def get_user_profile(username: str) -> Any:
 @user_router.route('/<username>/update', methods=['GET', 'POST'])
 @login_required
 def update_user_profile(username: str) -> Any:
-    user = get_user_by_username_db(username=username)
+    user = get_user_db(username=username)
 
     if not user:
         abort(404)
@@ -55,7 +55,7 @@ def update_user_profile(username: str) -> Any:
 @user_router.get('/authors')
 def show_authors() -> Any:
     page = request.args.get('page', default=1, type=int)
-    pgn = get_users_pgn(user_status=UserStatus.Author,
-                        page=page,
-                        per_page=10)
+    pgn = get_users_pgn(page=page,
+                        per_page=10,
+                        status=UserStatus.Author)
     return render_template('user/authors.html', pagination=pgn)

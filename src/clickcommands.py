@@ -1,7 +1,7 @@
 import click
 from werkzeug.security import generate_password_hash
 
-from src.database.enums import UserStatus
+from src.user.userenums import UserStatus
 from src.user.userservice import create_user_db
 
 

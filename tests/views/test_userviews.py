@@ -1,7 +1,7 @@
 from flask import Flask
 from flask.testing import FlaskClient
 
-from src.user.userservice import get_user_by_username_db
+from src.user.userservice import get_user_db
 from tests.testutils import AuthActions, get_test_pic_path
 
 
@@ -38,7 +38,7 @@ def test_update_profile(client: FlaskClient,
     assert res_post.request.path == '/users/auth_username'
     upd_user_data.pop('picture')
     with app.app_context():
-        upd_user = get_user_by_username_db(username='auth_username')
+        upd_user = get_user_db(username='auth_username')
     assert upd_user
     for key, val in upd_user_data.items():
         assert upd_user.__getattribute__(key) == val

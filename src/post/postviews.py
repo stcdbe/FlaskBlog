@@ -3,13 +3,14 @@ from typing import Any
 from flask import render_template, redirect, url_for, abort, request, Blueprint, flash
 from flask_login import current_user, login_required
 
-from src.database.enums import PostGroup, UserStatus, PostCategory
+from src.post.postenums import PostGroup, PostCategory
+from src.user.userenums import UserStatus
 from src.post.postservice import (get_posts_pgn,
                                   create_post_db,
                                   upd_post_db,
                                   create_com_db,
                                   del_post_db,
-                                  get_post_by_slug_db)
+                                  get_post_db)
 from src.post.postutils import prepare_post_data, prepare_com_data
 from src.post.postwtforms import PostCreateForm, PostUpdateForm, CommentCreateForm
 from src.utils import delete_picture
@@ -42,7 +43,7 @@ def show_posts() -> Any:
         case _:
             abort(404)
 
-    pgn = get_posts_pgn(post_group=PostGroup(post_group),
+    pgn = get_posts_pgn(group=PostGroup(post_group),
                         per_page=per_page,
                         page=page,
                         category=ctg)
@@ -67,7 +68,7 @@ def create_post() -> Any:
 
 @post_router.route('/<post_slug>', methods=['GET', 'POST'])
 def show_post_detail(post_slug: str) -> Any:
-    post = get_post_by_slug_db(post_slug=post_slug)
+    post = get_post_db(slug=post_slug)
 
     if not post:
         abort(404)
@@ -90,7 +91,7 @@ def show_post_detail(post_slug: str) -> Any:
 @post_router.route('/<post_slug>/update', methods=['GET', 'POST'])
 @login_required
 def update_post(post_slug: str) -> Any:
-    post = get_post_by_slug_db(post_slug=post_slug)
+    post = get_post_db(slug=post_slug)
 
     if not post:
         abort(404)
@@ -116,7 +117,7 @@ def update_post(post_slug: str) -> Any:
 @post_router.post('/<post_slug>/delete')
 @login_required
 def delete_post(post_slug: str) -> Any:
-    post = get_post_by_slug_db(post_slug=post_slug)
+    post = get_post_db(slug=post_slug)
 
     if not post:
         abort(404)
@@ -133,8 +134,8 @@ def delete_post(post_slug: str) -> Any:
 def search() -> Any:
     query = request.args.get('q', default='', type=str)
     page = request.args.get('page', default=1, type=int)
-    pgn = get_posts_pgn(post_group=PostGroup.articles,
-                        per_page=10,
+    pgn = get_posts_pgn(per_page=10,
                         page=page,
+                        group=PostGroup.articles,
                         search_query=query)
     return render_template('post/search.html', query=query, pagination=pgn)

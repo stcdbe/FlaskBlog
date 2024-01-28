@@ -3,7 +3,7 @@ from flask_wtf.file import FileAllowed, FileSize, FileField, FileRequired
 from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import Length, DataRequired, Optional
 
-from src.database.enums import PostCategory, PostGroup
+from src.post.postenums import PostCategory, PostGroup
 
 
 class PostCreateForm(FlaskForm):

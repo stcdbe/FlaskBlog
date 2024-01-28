@@ -8,10 +8,11 @@ from jinja2.runtime import Context
 from markupsafe import Markup
 from wtforms.validators import DataRequired, Length, Optional
 
-from src.database.dbmodels import User, Post
-from src.database.enums import UserStatus
-from src.post.postservice import count_all_posts_db, count_all_comments_db
-from src.user.userservice import count_all_users_db
+from src.user.usermodels import User
+from src.post.postmodels import Post
+from src.user.userenums import UserStatus
+from src.post.postservice import count_posts_db, count_comments_db
+from src.user.userservice import count_users_db
 from src.utils import delete_picture
 
 
@@ -20,14 +21,14 @@ class DashboardView(AdminIndexView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
 
     @expose('/')
     def index(self) -> str:
-        users_count = count_all_users_db()
-        posts_count = count_all_posts_db()
-        comments_count = count_all_comments_db()
+        users_count = count_users_db()
+        posts_count = count_posts_db()
+        comments_count = count_comments_db()
         return self.render('admin/index.html',
                            users_count=users_count,
                            posts_count=posts_count,
@@ -39,7 +40,7 @@ class UserView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
 
     def show_picture(self, context: Context, model: User, name: str) -> Markup:
@@ -69,7 +70,7 @@ class PostView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
 
     def show_picture(self, context: Context, model: Post, name: str) -> Markup:
@@ -101,7 +102,7 @@ class CommentView(ModelView):
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.Admin):
             return current_user.is_authenticated
 
-    def inaccessible_callback(self, name: str, **kwargs: dict[str, Any]) -> None:
+    def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
 
     page_size = 12

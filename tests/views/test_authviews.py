@@ -5,7 +5,7 @@ from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
 
 from src.config import RESET_PSW_TOKEN_EXPIRES
-from src.user.userservice import get_user_by_username_db
+from src.user.userservice import get_user_db
 from tests.testutils import AuthActions
 
 
@@ -29,7 +29,7 @@ def test_registration(client: FlaskClient,
     assert len(res_post.history) == 1
     assert res_post.request.path == '/'
     with app.app_context():
-        user = get_user_by_username_db(username=user_data['username'])
+        user = get_user_db(username=user_data['username'])
     assert user
     assert user.username == user_data['username']
     assert user.email == user_data['email']
@@ -83,7 +83,7 @@ def test_reset_password(client: FlaskClient,
     auth.logout()
 
     with app.app_context():
-        user = get_user_by_username_db(username='auth_username')
+        user = get_user_db(username='auth_username')
         token = create_access_token(identity=str(user.id),
                                     expires_delta=timedelta(minutes=RESET_PSW_TOKEN_EXPIRES))
 

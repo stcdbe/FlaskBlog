@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.test import TestResponse
 
 from src.config import TEST_EMAIL_RECEIVER
-from src.database.enums import UserStatus
+from src.user.userenums import UserStatus
 from src.user.userservice import create_user_db
 
 

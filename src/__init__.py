@@ -8,7 +8,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from src.celery import celery_init_app
-from src.database.dbmodels import BaseModel, User, Post, Comment
+from src.models import BaseModel
+from src.post.postmodels import Post, Comment
+from src.user.usermodels import User
 
 
 login_manager = LoginManager()
@@ -41,7 +43,7 @@ def create_app(config_object: object | str) -> Flask:
     @login_manager.user_loader
     def load_user(user_id: str) -> User | None:
         try:
-            return get_user_db(user_id=UUID(user_id))
+            return get_user_db(id=UUID(user_id))
         except ValueError:
             return
 
