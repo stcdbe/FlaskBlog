@@ -6,51 +6,56 @@
 
 {% block content %}
 <div class="container mt-5">
-	<div class="panel panel-default">
-		<div class="panel-body">
-			<h6 class="nomargin">
-				{{ pagination.total }} results
-			</h6>
-			<hr class="nomargin-bottom margin-top-10">
-			<form method="get" action="{{ url_for('posts.search') }}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
-				role="search">
-				<input class="form-control form-control-lg" type="text" placeholder="Search an article" name="q">
-			</form>
-			{% if pagination.items %}
-			{% for article in pagination.items %}
-			<div class="clearfix search-result">
-				<h4><a href="{{ url_for('posts.show_article_detail', post_slug=article.slug) }}">{{ article.title }}</a>
-				</h4>
-				<small>{{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
-				<p><small class="text-success">{{ article.category.value }}</small></p>
-				<p>{{ article.intro }}</p>
-			</div>
-			{% endfor %}
-			{% else %}
-			<div class="container mt-5">
-				<h4>No results for: {{ query }}</h4>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-	<nav>
-		<ul class="pagination">
-			{% if pagination.has_prev %}<li class="page-item"><a class="page-link"
-					href="{{ url_for('posts.search', q=query, page=pagination.prev_num) }}">Previous</a></li>
-			{% endif %}
-			{% for page in pagination.iter_pages() %}
-				{% if page %}
-					{% if page != pagination.page %}
-					<li class="page-item"><a class="page-link" href="{{ url_for('posts.search', q=query, page=page) }}">{{ page
-							}}</a></li>
-					{% else %}
-					<li class="page-item active"><a class="page-link" href="">{{ page }}</a></li>
-					{% endif %}
-				{% endif %}
-			{% endfor %}
-			{% if pagination.has_next %}<li class="page-item"><a class="page-link"
-					href="{{ url_for('posts.search', q=query, page=pagination.next_num) }}">Next</a></li>{% endif %}
-		</ul>
-	</nav>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h6 class="nomargin">
+                {{ pagination.total }} results
+            </h6>
+            <hr class="nomargin-bottom margin-top-10">
+            <form method="get" action="{{ url_for('posts.search') }}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+                  role="search">
+                <input class="form-control form-control-lg" type="text" placeholder="Search an article" name="q">
+            </form>
+            {% if pagination.items %}
+            {% for article in pagination.items %}
+            <div class="clearfix search-result">
+                <h4><a href="{{ url_for('posts.show_post_detail', post_slug=article.slug) }}">{{ article.title }}</a>
+                </h4>
+                <small>{{ article.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                <p><small class="text-success">{{ article.category.value }}</small></p>
+                <p>{{ article.intro }}</p>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="container mt-5">
+                <h4>No results for: {{ query }}</h4>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <nav>
+        <ul class="pagination">
+            {% if pagination.has_prev %}
+            <li class="page-item"><a class="page-link"
+                                     href="{{ url_for('posts.search', q=query, page=pagination.prev_num) }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for page in pagination.iter_pages() %}
+            {% if page %}
+            {% if page != pagination.page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('posts.search', q=query, page=page) }}">{{ page
+                }}</a></li>
+            {% else %}
+            <li class="page-item active"><a class="page-link" href="">{{ page }}</a></li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+            <li class="page-item"><a class="page-link"
+                                     href="{{ url_for('posts.search', q=query, page=pagination.next_num) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock %}

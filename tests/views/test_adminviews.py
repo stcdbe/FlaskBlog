@@ -1,9 +1,9 @@
 from flask.testing import FlaskClient
 
-from tests.testutils import AuthActions
+from tests.testutils import TestAuthActions
 
 
-def test_admin_dashboard(client: FlaskClient, auth: AuthActions) -> None:
+def test_admin_dashboard(client: FlaskClient, auth: TestAuthActions) -> None:
     auth.login()
 
     res_get = client.get('/admin', follow_redirects=True)
@@ -11,7 +11,7 @@ def test_admin_dashboard(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.request.path == '/admin/'
 
 
-def test_users_dashboard(client: FlaskClient, auth: AuthActions) -> None:
+def test_users_dashboard(client: FlaskClient, auth: TestAuthActions) -> None:
     auth.login()
 
     res_get = client.get('/admin/users')
@@ -19,7 +19,7 @@ def test_users_dashboard(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.request.path == '/admin/users'
 
 
-def test_posts_dashboard(client: FlaskClient, auth: AuthActions) -> None:
+def test_posts_dashboard(client: FlaskClient, auth: TestAuthActions) -> None:
     auth.login()
 
     res_get = client.get('/admin/posts')
@@ -27,7 +27,7 @@ def test_posts_dashboard(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.request.path == '/admin/posts'
 
 
-def test_comments_dashboard(client: FlaskClient, auth: AuthActions) -> None:
+def test_comments_dashboard(client: FlaskClient, auth: TestAuthActions) -> None:
     auth.login()
 
     res_get = client.get('/admin/comments')

@@ -1,4 +1,4 @@
-# Flask Blog Website  
+# Flask Blog
 ___
 ### Description
 Web application based on Flask with systems of verification, password recovery via email, administration, user's profile, creating, updating and deleting posts.
@@ -9,9 +9,9 @@ Web application based on Flask with systems of verification, password recovery v
 ___
 ### Getting Started
 #### Running on Local Machine
-+ install dependencies using PIP
++ install dependencies using Poetry
 ````
-$ pip install -r requirements/prod.txt 
+$ poetry install --no-root
 ````
 + configure environment variables in `.env` file
 + add app entrypoint
@@ -30,7 +30,7 @@ $ flask create-superuser [OPTIONS] USERNAME EMAIL PASSWORD
 ````
 $ gunicorn -c gunicorn.conf.py wsgi:app
 ````
-+ start celery as independent process
++ start celery worker as independent process
 ````
 $ celery -A wsgi.celery_app worker --loglevel WARNING
 ````
@@ -49,6 +49,7 @@ ____
 | variables                 | description                                      |
 |:--------------------------|:-------------------------------------------------|
 | `PORT`                    | app port                                         |
+| `DEBUG`                   | debug mode, only allowed 1(True)/0(False)        |
 | `SECRET_KEY`              | a secret key for the session cookie              |
 | `CSRF_SECRET_KEY`         | CSRF secret key                                  |
 | `CSRF_TIME_LIMIT`         | CSRF token lifetime in minutes                   |
@@ -80,6 +81,7 @@ ____
 + `Flask-Login`
 + `Flask-WTF`
 + `Flask-JWT-Extended`
++ `Flask-Injector`
 + `Pillow`
 + `Celery`
 + `Redis`

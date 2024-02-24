@@ -1,11 +1,14 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 PORT = int(os.getenv('PORT'))
+DEBUG = bool(os.getenv('DEBUG'))
+
+BASE_DIR = Path(__file__).parent
 
 PG_USER = os.getenv('PG_USER')
 PG_PASSWORD = os.getenv('PG_PASSWORD')
@@ -36,14 +39,14 @@ class DevelopmentSettings:
     DEBUG = True
     TESTING = True
     SECRET_KEY = os.getenv('SECRET_KEY')
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}'
-    SQLALCHEMY_ECHO = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {'pool_size': 10,
                                  'pool_recycle': 3600,
                                  'pool_pre_ping': True}
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     WTF_CSRF_SECRET_KEY = os.getenv('CSRF_SECRET_KEY')
     WTF_CSRF_TIME_LIMIT = 60 * int(os.getenv('CSRF_TIME_LIMIT'))

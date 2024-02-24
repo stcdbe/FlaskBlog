@@ -3,35 +3,36 @@
 {% block body %}
 <h3>Blog statistics</h3>
 <table class="table table-bordered">
-  <thead>
+    <thead>
     <tr>
-      <th scope="col"></th>
-      <th scope="col">Model</th>
-      <th scope="col">Count</th>
+        <th scope="col"></th>
+        <th scope="col">Model</th>
+        <th scope="col">Count</th>
     </tr>
-  </thead>
-  <tbody>
+    </thead>
+    <tbody>
     <tr>
-      <th scope="row">1</th>
-      <td>Users</td>
-      <td>{{ users_count }}</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Posts</td>
-      <td>{{ posts_count }}</td>
+        <th scope="row">1</th>
+        <td>Users</td>
+        <td>{{ users_count }}</td>
     </tr>
     <tr>
-      <th scope="row">3</th>
-      <td>Comments</td>
-      <td>{{ comments_count }}</td>
+        <th scope="row">2</th>
+        <td>Posts</td>
+        <td>{{ posts_count }}</td>
     </tr>
-  </tbody>
+    <tr>
+        <th scope="row">3</th>
+        <td>Comments</td>
+        <td>{{ comments_count }}</td>
+    </tr>
+    </tbody>
 </table>
 <div>
-  <form>
-    <button class="btn btn-dark" type="submit" formaction="{{ url_for('main.show_main_page') }}">Back to main
-      page</button>
-  </form>
+    <form>
+        <button class="btn btn-dark" type="submit" formaction="{{ url_for('main.show_main_page') }}">Back to main
+            page
+        </button>
+    </form>
 </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 function renderTextareaField() {
     const group = document.getElementById("group").value;
+
     let textareaContainer = document.getElementById("textareaContainer");
     textareaContainer.innerHTML = "";
 
