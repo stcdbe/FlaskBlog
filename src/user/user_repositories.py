@@ -1,8 +1,7 @@
 from typing import Any
 
 from flask_sqlalchemy.pagination import Pagination
-from sqlalchemy import ColumnElement
-from sqlalchemy import select, func, or_
+from sqlalchemy import ColumnElement, select, func, or_
 from sqlalchemy.exc import IntegrityError
 
 from src.repositories import SQLAlchemyRepository

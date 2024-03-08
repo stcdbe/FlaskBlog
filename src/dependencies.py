@@ -1,14 +1,17 @@
 from uuid import UUID
 
 from flask import Flask
+from flask_admin import Admin
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from injector import Module, Binder, singleton, provider
 
+from src.admin.admin_views import DashboardView, UserView, PostView, CommentView
 from src.auth.auth_services import AuthService
 from src.models import BaseModel
+from src.post.post_models import Post, Comment
 from src.post.post_repositories import PostRepository, CommentRepository
 from src.post.post_services import PostService, CommentService
 from src.services import PictureService, EmailService
@@ -26,6 +29,7 @@ class AppModule(Module):
         self.configure_migrations(db=db)
         self.configure_jwt()
         self.configure_login(db=db)
+        self.configure_admin(db=db)
 
         binder.bind(interface=SQLAlchemy, to=db, scope=singleton)
 
@@ -79,3 +83,15 @@ class AppModule(Module):
             return db.session.get(User, UUID(user_id))
 
         return login_manager
+
+    @provider
+    @singleton
+    def configure_admin(self, db: SQLAlchemy) -> Admin:
+        admin = Admin(app=self.app,
+                      name='FlaskBlog Admin Dashboard',
+                      template_mode='bootstrap4',
+                      index_view=DashboardView(name='Statistics'))
+        admin.add_view(UserView(model=User, session=db.session, name='Users'))
+        admin.add_view(PostView(model=Post, session=db.session, name='Posts'))
+        admin.add_view(CommentView(model=Comment, session=db.session, name='Comments'))
+        return admin

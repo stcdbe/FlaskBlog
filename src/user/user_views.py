@@ -2,10 +2,10 @@ from flask import Blueprint, render_template, abort, redirect, url_for, flash, r
 from flask_login import login_required, current_user
 from injector import inject
 
-from src.user.user_wtforms import ProfileUpdateForm
 from src.user.user_enums import UserStatus
 from src.user.user_models import User
 from src.user.user_services import UserService
+from src.user.user_wtforms import ProfileUpdateForm
 
 user_router = Blueprint(name='users',
                         import_name=__name__,

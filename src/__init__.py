@@ -1,9 +1,7 @@
 from flask import Flask, Response
 from flask.helpers import get_flashed_messages
-from flask_admin import Admin
 from flask_injector import FlaskInjector
-from injector import Injector, singleton
-from flask_sqlalchemy import SQLAlchemy
+from injector import Injector
 
 from src.admin.admin_views import DashboardView, UserView, PostView, CommentView
 from src.auth.auth_views import auth_router
@@ -26,22 +24,13 @@ def create_app(config_object: object | str) -> Flask:
     celery_init_app(app=flask_app)
 
     with flask_app.app_context():
-        app_injector = Injector(modules=[AppModule(app=flask_app)])
-        db = app_injector.get(interface=SQLAlchemy, scope=singleton)
+        app_injector = Injector(modules=(AppModule(app=flask_app),))
 
-    admin = Admin(app=flask_app,
-                  name='FlaskBlog Admin Dashboard',
-                  template_mode='bootstrap4',
-                  index_view=DashboardView(name='Statistics'))
-    admin.add_view(UserView(model=User, session=db.session, name='Users'))
-    admin.add_view(PostView(model=Post, session=db.session, name='Posts'))
-    admin.add_view(CommentView(model=Comment, session=db.session, name='Comments'))
-
-    flask_app.register_blueprint(auth_router)
-    flask_app.register_blueprint(user_router)
-    flask_app.register_blueprint(main_page_router)
-    flask_app.register_blueprint(post_router)
-    flask_app.register_blueprint(error_router)
+    flask_app.register_blueprint(blueprint=auth_router)
+    flask_app.register_blueprint(blueprint=user_router)
+    flask_app.register_blueprint(blueprint=main_page_router)
+    flask_app.register_blueprint(blueprint=post_router)
+    flask_app.register_blueprint(blueprint=error_router)
 
     @flask_app.get('/favicon.ico')
     def favicon() -> Response:
