@@ -12,7 +12,7 @@ python-dotenv = "^1.0.1"
 flask = "^3.0.2"
 flask-sqlalchemy = "^3.1.1"
 flask-migrate = "^4.0.5"
-psycopg2-binary = "^2.9.9"
+psycopg = {extras = ["binary"], version = "^3.1.18"}
 flask-login = "^0.6.3"
 flask-admin = "^1.6.1"
 flask-jwt-extended = "^4.6.0"
@@ -28,6 +28,39 @@ gunicorn = "^21.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
+
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+line-length = 120
+target-version = "py311"
 
 [build-system]
 requires = ["poetry-core"]

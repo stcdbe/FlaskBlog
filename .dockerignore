@@ -51,12 +51,12 @@ target/
 .env
 .venv/
 venv/
-# PyCharm
-.idea
 # Python mode for VIM
 .ropeproject
 **/.ropeproject
 # Vim swap files
 **/*.swp
+# PyCharm
+.idea
 # VS Code
 .vscode/
