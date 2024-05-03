@@ -4,14 +4,14 @@ from uuid import UUID
 from injector import inject
 
 from src.modules.comment.models.entities import Comment
-from src.modules.comment.repositories.sqlalchemy import SQLAlchemyCommentRepository
+from src.modules.comment.repositories.base import AbstractCommentRepository
 
 
 class CommentService:
-    _repository: SQLAlchemyCommentRepository
+    _repository: AbstractCommentRepository
 
     @inject
-    def __init__(self, repository: SQLAlchemyCommentRepository) -> None:
+    def __init__(self, repository: AbstractCommentRepository) -> None:
         self._repository = repository
 
     def count(self) -> int:

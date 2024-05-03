@@ -7,14 +7,15 @@ from slugify import slugify
 
 from src.core.services.picture.manager import PictureManager
 from src.modules.post.models.entities import Post
-from src.modules.post.repositories.sqlalchemy import SQLAlchemyPostRepository
+from src.modules.post.repositories.base import AbstractPostRepository
 
 
 class PostService:
-    _repository: SQLAlchemyPostRepository
+    _repository: AbstractPostRepository
+    _picture_manager: PictureManager
 
     @inject
-    def __init__(self, repository: SQLAlchemyPostRepository, picture_manager: PictureManager) -> None:
+    def __init__(self, repository: AbstractPostRepository, picture_manager: PictureManager) -> None:
         self._repository = repository
         self._picture_manager = picture_manager
 

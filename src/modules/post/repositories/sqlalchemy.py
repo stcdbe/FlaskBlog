@@ -7,10 +7,10 @@ from sqlalchemy.exc import IntegrityError
 from src.core.repositories.sqlalchemy import SQLAlchemyRepository
 from src.modules.post.exceptions.exceptions import InvalidPostTitleError
 from src.modules.post.models.entities import Post
-from src.modules.post.repositories.base import AbstractProjectRepository
+from src.modules.post.repositories.base import AbstractPostRepository
 
 
-class SQLAlchemyPostRepository(AbstractProjectRepository, SQLAlchemyRepository):
+class SQLAlchemyPostRepository(AbstractPostRepository, SQLAlchemyRepository):
     def count(self) -> int:
         stmt = select(func.count()).select_from(Post)
         res = self.db.session.execute(stmt)

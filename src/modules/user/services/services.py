@@ -5,14 +5,15 @@ from injector import inject
 
 from src.core.services.picture.manager import PictureManager
 from src.modules.user.models.entities import User
-from src.modules.user.repositories.sqlalchemy import SQLAlchemyUserRepository
+from src.modules.user.repositories.base import AbstractUserRepository
 
 
 class UserService:
-    _repository: SQLAlchemyUserRepository
+    _repository: AbstractUserRepository
+    _picture_manager: PictureManager
 
     @inject
-    def __init__(self, repository: SQLAlchemyUserRepository, picture_manager: PictureManager) -> None:
+    def __init__(self, repository: AbstractUserRepository, picture_manager: PictureManager) -> None:
         self._repository = repository
         self._picture_manager = picture_manager
 
@@ -51,14 +52,14 @@ class UserService:
             if hasattr(user, key):
                 setattr(user, key, val)
 
-        upd_user = self._repository.update_one(user=user)
+        user = self._repository.update_one(user=user)
 
         if pic_file:
             self._picture_manager.create_one(
                 pic_file=pic_file,
-                rel_pic_path=upd_user.picture,
+                rel_pic_path=user.picture,
                 pic_size=(250, 250),
             )
             self._picture_manager.delete_one(rel_pic_path=old_pic_path)
 
-        return upd_user
+        return user

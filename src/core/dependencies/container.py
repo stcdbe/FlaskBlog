@@ -17,12 +17,15 @@ from src.modules.admin.views.post import PostView
 from src.modules.admin.views.user import UserView
 from src.modules.auth.services.services import AuthService
 from src.modules.comment.models.entities import Comment
+from src.modules.comment.repositories.base import AbstractCommentRepository
 from src.modules.comment.repositories.sqlalchemy import SQLAlchemyCommentRepository
 from src.modules.comment.services.services import CommentService
 from src.modules.post.models.entities import Post
+from src.modules.post.repositories.base import AbstractPostRepository
 from src.modules.post.repositories.sqlalchemy import SQLAlchemyPostRepository
 from src.modules.post.services.services import PostService
 from src.modules.user.models.entities import User
+from src.modules.user.repositories.base import AbstractUserRepository
 from src.modules.user.repositories.sqlalchemy import SQLAlchemyUserRepository
 from src.modules.user.services.services import UserService
 
@@ -43,9 +46,9 @@ class AppModule(Module):
         binder.bind(interface=SQLAlchemy, to=db, scope=singleton)
 
         # Repositories
-        binder.bind(interface=SQLAlchemyUserRepository, scope=singleton)
-        binder.bind(interface=SQLAlchemyPostRepository, scope=singleton)
-        binder.bind(interface=SQLAlchemyCommentRepository, scope=singleton)
+        binder.bind(interface=AbstractUserRepository, to=SQLAlchemyUserRepository, scope=singleton)
+        binder.bind(interface=AbstractPostRepository, to=SQLAlchemyPostRepository, scope=singleton)
+        binder.bind(interface=AbstractCommentRepository, to=SQLAlchemyCommentRepository, scope=singleton)
 
         # Services
         binder.bind(interface=UserService)

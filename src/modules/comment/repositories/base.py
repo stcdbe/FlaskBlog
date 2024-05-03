@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any
+
+from src.modules.comment.models.entities import Comment
 
 
 class AbstractCommentRepository(ABC):
     @abstractmethod
-    def count(self, *args: Any, **kwargs: Any): ...
+    def count(self) -> int: ...
 
     @abstractmethod
-    def create_one(self, *args: Any, **kwargs: Any): ...
+    def create_one(self, com: Comment) -> Comment: ...
