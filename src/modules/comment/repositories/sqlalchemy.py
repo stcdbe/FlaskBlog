@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from src.core.repositories.sqlalchemy import SQLAlchemyRepository
 from src.modules.comment.models.entities import Comment

@@ -1,4 +1,4 @@
-from typing import BinaryIO
+from io import BufferedReader
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -22,7 +22,7 @@ def test_update_profile(
     auth: AuthActions,
     app: Flask,
     db: SQLAlchemy,
-    test_picture: BinaryIO,
+    picture: BufferedReader,
 ) -> None:
     auth.login()
 
@@ -31,7 +31,7 @@ def test_update_profile(
     assert res_get.request.path == "/users/auth_username/update"
 
     data = {
-        "picture": test_picture,
+        "picture": picture,
         "fullname": "test_fullname",
         "job_title": "test_position",
         "location": "test_location",

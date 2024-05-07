@@ -1,5 +1,5 @@
+from src.config import DEBUG, PORT, DevelopmentSettings, ProductionSettings
 from src.main import create_app
-from src.config import PORT, DEBUG, DevelopmentSettings, ProductionSettings
 
 if DEBUG:
     config_object = DevelopmentSettings

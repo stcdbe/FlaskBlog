@@ -42,7 +42,7 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
                 or_(
                     User.username == username_or_email,
                     User.email == username_or_email,
-                )
+                ),
             )
 
         res = self.db.session.execute(stmt)
@@ -53,9 +53,9 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
             self.db.session.add(user)
             self.db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidUsernameOrEmailError("An account with such username or email already exists.")
+            raise InvalidUsernameOrEmailError("An account with such username or email already exists.") from exc
 
         else:
             self.db.session.refresh(user)
@@ -65,9 +65,9 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
         try:
             self.db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidUsernameOrEmailError("An account with such username or email already exists.")
+            raise InvalidUsernameOrEmailError("An account with such username or email already exists.") from exc
 
         else:
             self.db.session.refresh(user)

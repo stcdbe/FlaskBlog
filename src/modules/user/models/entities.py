@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from src.modules.post.models.entities import Post
 
 
-class User(TimedBaseModel, UserMixin):
+class User(UserMixin, TimedBaseModel):
     __tablename__ = "user"
     username: Mapped[str] = mapped_column(unique=True, index=True)
     email: Mapped[str] = mapped_column(unique=True, index=True)

@@ -28,7 +28,7 @@ def login(auth_service: AuthService) -> Response | str:
             auth_service.login(data=form.data)
 
         except InvalidUserDataError as exc:
-            flash(f"{exc}", "danger")
+            flash(exc.message, "danger")
 
         else:
             return redirect(url_for("main.show_main_page"))
@@ -48,7 +48,7 @@ def registration(auth_service: AuthService) -> Response | str:
             auth_service.registrate(data=form.data)
 
         except InvalidUserDataError as exc:
-            flash(f"{exc}", "danger")
+            flash(exc.message, "danger")
 
         else:
             return redirect(url_for("main.show_main_page"))
@@ -76,7 +76,7 @@ def forgot_password(auth_service: AuthService) -> Response | str:
             auth_service.forgot_psw(email=form.email.data)
 
         except InvalidUserDataError as exc:
-            flash(f"{exc}", "danger")
+            flash(exc.message, "danger")
 
         else:
             flash("Further instructions have been sent to your email address.", "primary")
@@ -95,7 +95,7 @@ def reset_password(auth_service: AuthService, token: str) -> Response | str:
         user = auth_service.validate_token(token=token)
 
     except InvalidUserDataError as exc:
-        flash(f"{exc}", "danger")
+        flash(exc.message, "danger")
         return redirect(url_for("auth.forgot_password"))
 
     form = PasswordResetForm()

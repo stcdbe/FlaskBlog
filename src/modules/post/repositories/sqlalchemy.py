@@ -66,9 +66,9 @@ class SQLAlchemyPostRepository(AbstractPostRepository, SQLAlchemyRepository):
             self.db.session.add(post)
             self.db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidPostTitleError("Post title must be unique.")
+            raise InvalidPostTitleError("Post title must be unique.") from exc
 
         else:
             self.db.session.refresh(post)
@@ -78,9 +78,9 @@ class SQLAlchemyPostRepository(AbstractPostRepository, SQLAlchemyRepository):
         try:
             self.db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidPostTitleError("Post title must be unique.")
+            raise InvalidPostTitleError("Post title must be unique.") from exc
 
         else:
             self.db.session.refresh(post)

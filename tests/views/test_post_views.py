@@ -1,4 +1,4 @@
-from typing import BinaryIO
+from io import BufferedReader
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -22,7 +22,7 @@ def test_create_post(
     auth: AuthActions,
     app: Flask,
     db: SQLAlchemy,
-    test_picture: BinaryIO,
+    picture: BufferedReader,
 ) -> None:
     auth.login()
 
@@ -30,23 +30,23 @@ def test_create_post(
     assert res_get.status_code == 200
     assert res_get.request.path == "/posts/create"
 
-    post_data = {
+    data = {
         "title": "new_test_title",
         "group": PostGroup.articles,
         "category": PostCategory.development,
         "intro": "new_test_intro",
         "text": "new_test_long_text",
-        "picture": test_picture,
+        "picture": picture,
     }
-    res_post = client.post("/posts/create", data=post_data, follow_redirects=True)
+    res_post = client.post("/posts/create", data=data, follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
     assert res_post.request.path == "/posts"
-    post_data.pop("picture")
+    data.pop("picture")
     with app.app_context():
-        stmt = select(Post).where(Post.title == post_data["title"])
+        stmt = select(Post).where(Post.title == data["title"])
         post = db.session.execute(stmt).scalars().one()
-    for key, val in post_data.items():
+    for key, val in data.items():
         assert post.__getattribute__(key) == val
 
 
@@ -81,7 +81,7 @@ def test_update_post(
     auth: AuthActions,
     app: Flask,
     db: SQLAlchemy,
-    test_picture: BinaryIO,
+    picture: BufferedReader,
 ) -> None:
     auth.login()
 
@@ -93,23 +93,23 @@ def test_update_post(
     assert res_get.status_code == 200
     assert res_get.request.path == f"/posts/{post.slug}/update"
 
-    upd_post_data = {
+    data = {
         "title": "upd_test_title",
         "category": PostCategory.administration,
         "intro": "upd_test_intro",
         "text": "upd_test_long_text",
-        "picture": test_picture,
+        "picture": picture,
     }
-    res_post = client.post(f"/posts/{post.slug}/update", data=upd_post_data, follow_redirects=True)
+    res_post = client.post(f"/posts/{post.slug}/update", data=data, follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
     assert res_post.request.path == "/posts"
     with app.app_context():
-        stmt = select(Post).where(Post.title == upd_post_data["title"])
-        upd_post = db.session.execute(stmt).scalars().one()
-    assert upd_post.intro == upd_post_data["intro"]
-    assert upd_post.text == upd_post_data["text"]
-    assert upd_post.category == upd_post_data["category"]
+        stmt = select(Post).where(Post.title == data["title"])
+        post = db.session.execute(stmt).scalars().one()
+    assert post.intro == data["intro"]
+    assert post.text == data["text"]
+    assert post.category == data["category"]
 
 
 def test_delete_post(

@@ -64,7 +64,7 @@ class AuthService:
         token = create_access_token(identity=str(user.id), expires_delta=exp_delta)
         url = request.host_url[:-1] + url_for("auth.reset_password", token=token)
 
-        email_body = render_template("email/reset_psw_email.html", **{"user": user, "url": url})
+        email_body = render_template("email/reset_psw_email.html", user=user, url=url)
         self._email_sender.send_email.delay(
             email_subject="(Flask Blog) Reset your password",
             email_receivers=[user.email],
@@ -77,11 +77,11 @@ class AuthService:
         try:
             user_id = UUID(decode_token(encoded_token=token)["sub"])
 
-        except ExpiredSignatureError:
-            raise exp_exc
+        except ExpiredSignatureError as exc:
+            raise exp_exc from exc
 
-        except (DecodeError, InvalidTokenError, KeyError, ValueError):
-            raise inv_exc
+        except (DecodeError, InvalidTokenError, KeyError, ValueError) as exc:
+            raise inv_exc from exc
 
         user = self._repository.get_one(id=user_id)
 
@@ -95,7 +95,8 @@ class AuthService:
         user = self._repository.update_one(user=user)
         email_body = render_template(
             "email/info_psw_email.html",
-            **{"user": user, "url": request.host_url[:-1] + url_for("auth.forgot_password")},
+            user=user,
+            url=request.host_url[:-1] + url_for("auth.forgot_password"),
         )
         self._email_sender.send_email.delay(
             email_subject="(Flask Blog) Your password was reset",

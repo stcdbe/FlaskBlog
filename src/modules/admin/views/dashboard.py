@@ -12,9 +12,10 @@ from src.modules.user.services.services import UserService
 
 
 class DashboardView(AdminIndexView):
-    def is_accessible(self) -> bool | None:
+    def is_accessible(self) -> bool:
         if (not current_user.is_anonymous) and (current_user.status == UserStatus.admin):
             return current_user.is_authenticated
+        return False
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)

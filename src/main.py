@@ -1,9 +1,10 @@
 from typing import Any
 
-from flask import Flask, Response, get_flashed_messages
+from flask import Flask, Response, get_flashed_messages, send_from_directory
 from flask_injector import FlaskInjector
 from injector import Injector
 
+from src.config import BASE_DIR
 from src.core.dependencies.container import AppModule
 from src.core.workers.celery import celery_init_app
 from src.modules.auth.views.routes import auth_router
@@ -29,7 +30,11 @@ def create_app(config_object: Any) -> Flask:
 
     @flask_app.get(rule="/favicon.ico")
     def favicon() -> Response:
-        return flask_app.send_static_file(filename="img/favicon.ico")
+        return send_from_directory(
+            directory=(BASE_DIR / "src" / "static" / "img"),
+            path="favicon.ico",
+            mimetype="image/vnd.microsoft.icon",
+        )
 
     FlaskInjector(app=flask_app, injector=app_injector)
 
@@ -37,7 +42,7 @@ def create_app(config_object: Any) -> Flask:
         {
             "url_for": flask_app.url_for,
             "get_flashed_messages": get_flashed_messages,
-        }
+        },
     )
 
     return flask_app
