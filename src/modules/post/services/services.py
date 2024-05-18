@@ -5,7 +5,7 @@ from flask_sqlalchemy.pagination import Pagination
 from injector import inject
 from slugify import slugify
 
-from src.core.services.picture.manager import PictureManager
+from src.core.utils.picture.manager import PictureManager
 from src.modules.post.models.entities import Post
 from src.modules.post.repositories.base import AbstractPostRepository
 
@@ -89,7 +89,8 @@ class PostService:
         old_pic_path = post.picture
         if pic_file:
             data["picture"] = self._picture_manager.generate_rel_pic_path(
-                img_catalog="postimg", filename=pic_file.filename
+                img_catalog="postimg",
+                filename=pic_file.filename,
             )
 
         for key, val in data.items():

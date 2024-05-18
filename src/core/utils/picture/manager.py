@@ -1,5 +1,4 @@
 import logging
-import os
 from pathlib import Path
 from secrets import token_urlsafe
 from typing import Literal
@@ -7,17 +6,17 @@ from typing import Literal
 from PIL import Image
 from werkzeug.datastructures import FileStorage
 
-from src.config import BASE_DIR
+from src.config import env
 
 
 class PictureManager:
     def generate_rel_pic_path(self, img_catalog: Literal["postimg", "userimg"], filename: str) -> str:
-        _, ext = os.path.splitext(filename)
+        ext = Path(filename).suffix
         pic_name = token_urlsafe(32) + ext
-        return str(Path("/static") / "img" / img_catalog / pic_name)
+        return str(Path("/static/img") / img_catalog / pic_name)
 
     def generate_abs_pic_path(self, rel_pic_path: str) -> str:
-        return str(BASE_DIR / "src" / rel_pic_path[1:])
+        return str(env.BASE_DIR / "src" / rel_pic_path[1:])
 
     def create_one(
         self,
@@ -38,6 +37,6 @@ class PictureManager:
 
         abs_pic_path = self.generate_abs_pic_path(rel_pic_path=rel_pic_path)
         try:
-            os.remove(abs_pic_path)
+            Path.unlink(Path(abs_pic_path))
         except FileNotFoundError:
             logging.warning("Attempt to delete a non-existent file: %s", rel_pic_path)

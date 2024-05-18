@@ -55,7 +55,7 @@ def show_posts(post_service: PostService) -> str:
     )
 
 
-@post_router.route(rule="/<post_slug>", methods=["GET", "POST"])
+@post_router.route(rule="/<post_slug>", methods=("GET", "POST"))
 @inject
 def show_post_detail(
     post_service: PostService,
@@ -75,12 +75,21 @@ def show_post_detail(
         if post.group != PostGroup.articles:
             abort(404)
 
-        comment_service.create_one(post_id=post.id, creator_id=current_user.id, data=form.data)
+        comment_service.create_one(
+            post_id=post.id,
+            creator_id=current_user.id,
+            data=form.data,
+        )
 
-    return render_template("post/post_detail.html", post=post, form=form, categories=PostCategory)
+    return render_template(
+        "post/post_detail.html",
+        post=post,
+        form=form,
+        categories=PostCategory,
+    )
 
 
-@post_router.route(rule="/create", methods=["GET", "POST"])
+@post_router.route(rule="/create", methods=("GET", "POST"))
 @login_required
 @inject
 def create_post(post_service: PostService) -> Response | str:
@@ -101,7 +110,7 @@ def create_post(post_service: PostService) -> Response | str:
     return render_template("post/create_post.html", form=form)
 
 
-@post_router.route(rule="/<post_slug>/update", methods=["GET", "POST"])
+@post_router.route(rule="/<post_slug>/update", methods=("GET", "POST"))
 @login_required
 @inject
 def update_post(post_service: PostService, post_slug: str) -> Response | str:

@@ -11,20 +11,20 @@ error_router = Blueprint(
 
 
 @error_router.app_errorhandler(code=401)
-def catch_401_error(_: Unauthorized) -> Response:
-    return redirect(url_for("auth.login"))
+def catch_401_error(_: Unauthorized) -> tuple[Response, int]:
+    return redirect(url_for("auth.login")), 401
 
 
 @error_router.app_errorhandler(code=403)
-def catch_403_error(_: Forbidden) -> Response:
-    return redirect(url_for("auth.login"))
+def catch_403_error(_: Forbidden) -> tuple[Response, int]:
+    return redirect(url_for("auth.login")), 403
 
 
 @error_router.app_errorhandler(code=404)
-def catch_404_error(_: NotFound) -> str:
-    return render_template("error/not_found.html")
+def catch_404_error(_: NotFound) -> tuple[str, int]:
+    return render_template("error/not_found.html"), 404
 
 
 @error_router.app_errorhandler(code=500)
-def catch_500_error(_: InternalServerError) -> str:
-    return render_template("error/server_trouble.html")
+def catch_500_error(_: InternalServerError) -> tuple[str, int]:
+    return render_template("error/server_trouble.html"), 500

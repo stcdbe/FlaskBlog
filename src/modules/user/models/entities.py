@@ -20,7 +20,10 @@ class User(UserMixin, TimedBaseModel):
         server_default="/static/img/userimg/default.jpg",
         default="/static/img/userimg/default.jpg",
     )
-    status: Mapped[UserStatus] = mapped_column(server_default=UserStatus.default, default=UserStatus.default)
+    status: Mapped[UserStatus] = mapped_column(
+        server_default=UserStatus.default,
+        default=UserStatus.default,
+    )
     fullname: Mapped[str | None]
     job_title: Mapped[str | None]
     company: Mapped[str | None]
@@ -28,5 +31,11 @@ class User(UserMixin, TimedBaseModel):
     website: Mapped[str | None]
     github: Mapped[str | None]
     twitter: Mapped[str | None]
-    posts: Mapped[list["Post"]] = relationship(back_populates="creator", cascade="all, delete-orphan")
-    comments: Mapped[list["Comment"]] = relationship(back_populates="creator", cascade="all, delete-orphan")
+    posts: Mapped[list["Post"]] = relationship(
+        back_populates="creator",
+        cascade="all, delete-orphan",
+    )
+    comments: Mapped[list["Comment"]] = relationship(
+        back_populates="creator",
+        cascade="all, delete-orphan",
+    )

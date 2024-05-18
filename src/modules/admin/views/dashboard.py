@@ -13,16 +13,23 @@ from src.modules.user.services.services import UserService
 
 class DashboardView(AdminIndexView):
     def is_accessible(self) -> bool:
-        if (not current_user.is_anonymous) and (current_user.status == UserStatus.admin):
-            return current_user.is_authenticated
-        return False
+        if current_user.is_anonymous:
+            return False
+        if current_user.status != UserStatus.admin:
+            return False
+        return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
 
     @expose("/")
     @inject
-    def index(self, user_service: UserService, post_service: PostService, comment_service: CommentService) -> str:
+    def index(
+        self,
+        user_service: UserService,
+        post_service: PostService,
+        comment_service: CommentService,
+    ) -> str:
         users_count = user_service.count()
         posts_count = post_service.count()
         comments_count = comment_service.count()

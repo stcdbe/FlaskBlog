@@ -8,7 +8,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 from flask_sqlalchemy import SQLAlchemy
 
-from src.config import BASE_DIR, TestSettings
+from src.config import TestSettings, env
 from src.main import create_app
 from tests.sqlalchemy import create_tables, drop_tables, insert_test_data
 from tests.utils import AuthActions
@@ -49,6 +49,6 @@ def auth(client: FlaskClient) -> AuthActions:
 
 @pytest.fixture()
 def picture() -> Generator[BufferedReader, Any, None]:
-    abs_test_pic_path = BASE_DIR / "tests" / "resources" / "test.jpeg"
+    abs_test_pic_path = env.BASE_DIR / "tests" / "resources" / "test.jpeg"
     with Path.open(abs_test_pic_path, "rb") as file:
         yield file

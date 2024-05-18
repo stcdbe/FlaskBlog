@@ -4,7 +4,7 @@ from flask import Flask, Response, get_flashed_messages, send_from_directory
 from flask_injector import FlaskInjector
 from injector import Injector
 
-from src.config import BASE_DIR
+from src.config import env
 from src.core.dependencies.container import AppModule
 from src.core.workers.celery import celery_init_app
 from src.modules.auth.views.routes import auth_router
@@ -23,7 +23,7 @@ def create_app(config_object: Any) -> Flask:
     celery_init_app(app=flask_app)
 
     with flask_app.app_context():
-        app_injector = Injector(modules=(AppModule(app=flask_app),))
+        injector = Injector(modules=(AppModule(app=flask_app),))
 
     for router in (auth_router, user_router, main_page_router, post_router, error_router):
         flask_app.register_blueprint(blueprint=router)
@@ -31,12 +31,12 @@ def create_app(config_object: Any) -> Flask:
     @flask_app.get(rule="/favicon.ico")
     def favicon() -> Response:
         return send_from_directory(
-            directory=(BASE_DIR / "src" / "static" / "img"),
+            directory=(env.BASE_DIR / "src" / "static" / "img"),
             path="favicon.ico",
             mimetype="image/vnd.microsoft.icon",
         )
 
-    FlaskInjector(app=flask_app, injector=app_injector)
+    FlaskInjector(app=flask_app, injector=injector)
 
     flask_app.jinja_env.globals.update(
         {

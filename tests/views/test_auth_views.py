@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 
-from src.config import RESET_PSW_TOKEN_EXPIRES, TEST_EMAIL_RECEIVER
+from src.config import env
 from src.modules.user.models.entities import User
 from src.modules.user.models.enums import UserStatus
 from tests.utils import AuthActions
@@ -50,7 +50,7 @@ def test_login(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.status_code == 200
     assert res_get.request.path == "/auth/login"
 
-    data = {"username_or_email": TEST_EMAIL_RECEIVER, "password": "Password123"}
+    data = {"username_or_email": env.TEST_EMAIL_RECEIVER, "password": "Password123"}
     res_post = client.post("/auth/login", data=data, follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
@@ -73,7 +73,7 @@ def test_forgot_password(client: FlaskClient, auth: AuthActions) -> None:
     assert res_get.status_code == 200
     assert res_get.request.path == "/auth/forgot_password"
 
-    data = {"email": TEST_EMAIL_RECEIVER}
+    data = {"email": env.TEST_EMAIL_RECEIVER}
     res_post = client.post("/auth/forgot_password", data=data, follow_redirects=True)
     assert res_post.status_code == 200
     assert len(res_post.history) == 1
@@ -88,7 +88,7 @@ def test_reset_password(
 ) -> None:
     auth.logout()
 
-    exp_delta = timedelta(minutes=RESET_PSW_TOKEN_EXPIRES)
+    exp_delta = timedelta(minutes=env.RESET_PSW_TOKEN_EXPIRES)
     with app.app_context():
         stmt = select(User).where(User.username == "auth_username")
         user = db.session.execute(stmt).scalars().one()

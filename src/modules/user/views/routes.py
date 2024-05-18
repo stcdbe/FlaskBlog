@@ -27,7 +27,7 @@ def get_user_profile(user_service: UserService, username: str) -> str:
     return render_template("user/profile.html", user=user)
 
 
-@user_router.route(rule="/<username>/update", methods=["GET", "POST"])
+@user_router.route(rule="/<username>/update", methods=("GET", "POST"))
 @login_required
 @inject
 def update_user_profile(user_service: UserService, username: str) -> Response | str:

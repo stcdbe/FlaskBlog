@@ -9,13 +9,15 @@ from flask_sqlalchemy import SQLAlchemy
 from injector import Binder, Module, provider, singleton
 
 from src.core.models.sqlalchemy import BaseModel
-from src.core.services.email.smtp import SMTPEmailSender
-from src.core.services.picture.manager import PictureManager
+from src.core.utils.email.smtp import SMTPEmailSender
+from src.core.utils.picture.manager import PictureManager
 from src.modules.admin.views.comment import CommentView
 from src.modules.admin.views.dashboard import DashboardView
 from src.modules.admin.views.post import PostView
 from src.modules.admin.views.user import UserView
 from src.modules.auth.services.services import AuthService
+from src.modules.auth.utils.hasher.base import AbstractHasher
+from src.modules.auth.utils.hasher.werkzeug import WerkzeugHasher
 from src.modules.comment.models.entities import Comment
 from src.modules.comment.repositories.base import AbstractCommentRepository
 from src.modules.comment.repositories.sqlalchemy import SQLAlchemyCommentRepository
@@ -39,8 +41,8 @@ class AppModule(Module):
         db = self.configure_db()
         self.configure_migrations(db=db)
         self.configure_jwt()
-        self.configure_login(db=db)
         self.configure_admin(db=db)
+        self.configure_login(db=db)
 
         # SQLAlchemy db instance
         binder.bind(interface=SQLAlchemy, to=db, scope=singleton)
@@ -50,15 +52,16 @@ class AppModule(Module):
         binder.bind(interface=AbstractPostRepository, to=SQLAlchemyPostRepository, scope=singleton)
         binder.bind(interface=AbstractCommentRepository, to=SQLAlchemyCommentRepository, scope=singleton)
 
+        # Utils
+        binder.bind(interface=SMTPEmailSender)
+        binder.bind(interface=PictureManager)
+        binder.bind(interface=AbstractHasher, to=WerkzeugHasher)
+
         # Services
         binder.bind(interface=UserService)
         binder.bind(interface=AuthService)
         binder.bind(interface=PostService)
         binder.bind(interface=CommentService)
-
-        # Utils
-        binder.bind(interface=SMTPEmailSender)
-        binder.bind(interface=PictureManager)
 
     @provider
     @singleton

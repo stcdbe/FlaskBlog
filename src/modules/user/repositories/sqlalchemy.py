@@ -55,7 +55,8 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
 
         except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidUsernameOrEmailError("An account with such username or email already exists.") from exc
+            msg = "An account with such username or email already exists."
+            raise InvalidUsernameOrEmailError(msg) from exc
 
         else:
             self.db.session.refresh(user)
@@ -67,7 +68,8 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
 
         except IntegrityError as exc:
             self.db.session.rollback()
-            raise InvalidUsernameOrEmailError("An account with such username or email already exists.") from exc
+            msg = "An account with such username or email already exists."
+            raise InvalidUsernameOrEmailError(msg) from exc
 
         else:
             self.db.session.refresh(user)

@@ -1,7 +1,9 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from src.modules.auth.utils.hasher.base import AbstractHasher
 
-class Hasher:
+
+class WerkzeugHasher(AbstractHasher):
     @staticmethod
     def get_psw_hash(psw: str) -> str:
         return generate_password_hash(password=psw)

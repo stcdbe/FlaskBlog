@@ -12,9 +12,11 @@ from src.modules.user.models.enums import UserStatus
 
 class UserView(ModelView):
     def is_accessible(self) -> bool:
-        if (not current_user.is_anonymous) and (current_user.status == UserStatus.admin):
-            return current_user.is_authenticated
-        return False
+        if current_user.is_anonymous:
+            return False
+        if current_user.status != UserStatus.admin:
+            return False
+        return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
         abort(404)
@@ -28,9 +30,7 @@ class UserView(ModelView):
     can_edit = False
     edit_modal = True
     column_descriptions = {
-        "status": """default - can leave comments;
-                     author - can create, update posts;
-                     admin - access to the admin panel"""
+        "status": "default - can leave comments; author - can create, update posts; admin - access to the admin panel"
     }
     can_view_details = True
     details_modal = True

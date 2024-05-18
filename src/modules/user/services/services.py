@@ -3,7 +3,7 @@ from typing import Any
 from flask_sqlalchemy.pagination import Pagination
 from injector import inject
 
-from src.core.services.picture.manager import PictureManager
+from src.core.utils.picture.manager import PictureManager
 from src.modules.user.models.entities import User
 from src.modules.user.repositories.base import AbstractUserRepository
 

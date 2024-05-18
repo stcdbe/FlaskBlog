@@ -8,25 +8,32 @@ from flask_login import login_user, logout_user
 from injector import inject
 from jwt import DecodeError, ExpiredSignatureError, InvalidTokenError
 
-from src.config import RESET_PSW_TOKEN_EXPIRES
-from src.core.services.email.smtp import SMTPEmailSender
-from src.modules.auth.utils.hasher import Hasher
+from src.config import env
+from src.core.utils.email.smtp import SMTPEmailSender
+from src.modules.auth.utils.hasher.base import AbstractHasher
 from src.modules.user.exceptions.exceptions import InvalidEmailError, InvalidJWTError, InvalidUsernameOrEmailError
 from src.modules.user.models.entities import User
-from src.modules.user.repositories.sqlalchemy import SQLAlchemyUserRepository
+from src.modules.user.repositories.base import AbstractUserRepository
 
 
 class AuthService:
-    _repository: SQLAlchemyUserRepository
+    _repository: AbstractUserRepository
     _email_sender: SMTPEmailSender
+    _hasher: AbstractHasher
 
     @inject
-    def __init__(self, repository: SQLAlchemyUserRepository, email_sender: SMTPEmailSender) -> None:
+    def __init__(
+        self,
+        repository: AbstractUserRepository,
+        email_sender: SMTPEmailSender,
+        hasher: AbstractHasher,
+    ) -> None:
         self._repository = repository
         self._email_sender = email_sender
+        self._hasher = hasher
 
     def registrate(self, data: dict[str, Any]) -> User:
-        data["password"] = Hasher.get_psw_hash(psw=data["password"])
+        data["password"] = self._hasher.get_psw_hash(psw=data["password"])
 
         user = User()
 
@@ -45,7 +52,7 @@ class AuthService:
         if not user:
             raise exc
 
-        if not Hasher.verify_psw(psw_to_check=data["password"], hashed_psw=user.password):
+        if not self._hasher.verify_psw(psw_to_check=data["password"], hashed_psw=user.password):
             raise exc
 
         login_user(user=user, remember=data["remember"])
@@ -58,9 +65,10 @@ class AuthService:
         user = self._repository.get_one(email=email)
 
         if not user:
-            raise InvalidEmailError("Invalid email address.")
+            msg = "Invalid email address."
+            raise InvalidEmailError(msg)
 
-        exp_delta = timedelta(minutes=RESET_PSW_TOKEN_EXPIRES)
+        exp_delta = timedelta(minutes=env.RESET_PSW_TOKEN_EXPIRES)
         token = create_access_token(identity=str(user.id), expires_delta=exp_delta)
         url = request.host_url[:-1] + url_for("auth.reset_password", token=token)
 
@@ -91,7 +99,7 @@ class AuthService:
         return user
 
     def reset_psw(self, user: User, new_password: str) -> None:
-        user.password = Hasher.get_psw_hash(psw=new_password)
+        user.password = self._hasher.get_psw_hash(psw=new_password)
         user = self._repository.update_one(user=user)
         email_body = render_template(
             "email/info_psw_email.html",

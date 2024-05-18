@@ -1,7 +1,7 @@
-from src.core.exceptions.base import AbstractAppError
+from src.core.exceptions.base import BaseAppError
 
 
-class InvalidPostDataError(AbstractAppError):
+class InvalidPostDataError(BaseAppError):
     pass
 
 
