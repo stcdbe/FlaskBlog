@@ -16,14 +16,8 @@ class User(UserMixin, TimedBaseModel):
     username: Mapped[str] = mapped_column(unique=True, index=True)
     email: Mapped[str] = mapped_column(unique=True, index=True)
     password: Mapped[str]
-    picture: Mapped[str] = mapped_column(
-        server_default="/static/img/userimg/default.jpg",
-        default="/static/img/userimg/default.jpg",
-    )
-    status: Mapped[UserStatus] = mapped_column(
-        server_default=UserStatus.default,
-        default=UserStatus.default,
-    )
+    picture: Mapped[str] = mapped_column(default="/static/img/userimg/default.jpg")
+    status: Mapped[UserStatus] = mapped_column(default=UserStatus.default)
     fullname: Mapped[str | None]
     job_title: Mapped[str | None]
     company: Mapped[str | None]

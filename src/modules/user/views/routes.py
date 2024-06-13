@@ -1,3 +1,5 @@
+from http import HTTPMethod, HTTPStatus
+
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from injector import inject
@@ -22,22 +24,22 @@ def get_user_profile(user_service: UserService, username: str) -> str:
     user = user_service.get_one(username=username)
 
     if not user:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     return render_template("user/profile.html", user=user)
 
 
-@user_router.route(rule="/<username>/update", methods=("GET", "POST"))
+@user_router.route(rule="/<username>/update", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @login_required
 @inject
 def update_user_profile(user_service: UserService, username: str) -> Response | str:
     user = user_service.get_one(username=username)
 
     if not user:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     if current_user.id != user.id:
-        abort(403)
+        abort(code=HTTPStatus.FORBIDDEN)
 
     form = ProfileUpdateForm()
     if form.validate_on_submit():

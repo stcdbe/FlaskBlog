@@ -1,4 +1,4 @@
-{% extends 'basepost.html' %}
+{% extends 'basesite.html' %}
 
 {% block title %}
 <title>Authors</title>
@@ -15,29 +15,27 @@
                 <div class="table-container">
                     <table class="table-users table" border="0">
                         <tbody>
-                        {% for author in pagination.items %}
-                        <tr>
-                            <td width="10">
-                                <img class="rounded-circle" width="50"
-                                     src="{{ author.picture }}"/>
-                            </td>
-                            <td>
-                                <a href="{{ url_for('users.get_user_profile', username=author.username) }}">{{
-                                    author.username }}</a><br><i
-                                    class="fa fa-envelope"></i>
-                            </td>
-                            <td>
-                                Posts<br><small class="text-muted">{{ author.posts|length }}</small>
-                            </td>
-                            <td>
-                                Comments<br><small class="text-muted">{{ author.comments|length }}</small>
-                            </td>
-                            <td align="center">
-                                Date of registration: {{ author.created_at.strftime('%Y-%m-%d') }}<br><small
-                                    class="text-muted"></small>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                            {% for author in pagination.items %}
+                            <tr>
+                                <td width="10">
+                                    <img class="rounded-circle" width="50" src="{{ author.picture }}" />
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('users.get_user_profile', username=author.username) }}">{{
+                                    author.username }}</a><br><i class="fa fa-envelope"></i>
+                                </td>
+                                <td>
+                                    Posts<br><small class="text-muted">{{ author.posts|length }}</small>
+                                </td>
+                                <td>
+                                    Comments<br><small class="text-muted">{{ author.comments|length }}</small>
+                                </td>
+                                <td align="center">
+                                    Date of registration: {{ author.created_at.strftime('%Y-%m-%d') }}<br><small
+                                        class="text-muted"></small>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -50,7 +48,7 @@
         <ul class="pagination">
             {% if pagination.has_prev %}
             <li class="page-item"><a class="page-link"
-                                     href="{{ url_for('users.show_authors', page=pagination.prev_num) }}">Previous</a>
+                    href="{{ url_for('users.show_authors', page=pagination.prev_num) }}">Previous</a>
             </li>
             {% endif %}
             {% for page in pagination.iter_pages() %}
@@ -66,7 +64,7 @@
             {% endfor %}
             {% if pagination.has_next %}
             <li class="page-item"><a class="page-link"
-                                     href="{{ url_for('users.show_authors', page=pagination.next_num) }}">Next</a></li>
+                    href="{{ url_for('users.show_authors', page=pagination.next_num) }}">Next</a></li>
             {% endif %}
         </ul>
     </nav>

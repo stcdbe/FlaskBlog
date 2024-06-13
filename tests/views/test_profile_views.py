@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from io import BufferedReader
 
 from flask import Flask
@@ -13,7 +14,7 @@ def test_show_profile(client: FlaskClient, auth: AuthActions) -> None:
     auth.login()
 
     res_get = client.get("/users/auth_username")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/users/auth_username"
 
 
@@ -27,7 +28,7 @@ def test_update_profile(
     auth.login()
 
     res_get = client.get("/users/auth_username/update")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/users/auth_username/update"
 
     data = {
@@ -41,7 +42,7 @@ def test_update_profile(
         "twitter": "https://example.com/",
     }
     res_post = client.post("/users/auth_username/update", data=data, follow_redirects=True)
-    assert res_post.status_code == 200
+    assert res_post.status_code == HTTPStatus.OK
     assert len(res_post.history) == 1
     assert res_post.request.path == "/users/auth_username"
     data.pop("picture")
@@ -54,5 +55,5 @@ def test_update_profile(
 
 def test_show_authors(client: FlaskClient) -> None:
     res_get = client.get("/users/authors")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/users/authors"

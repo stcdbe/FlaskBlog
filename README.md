@@ -48,6 +48,7 @@ ____
 #### Environment variables
 | variables                 | description                                      |
 |:--------------------------|:-------------------------------------------------|
+| `HOST`                    | app host                                         |
 | `PORT`                    | app port                                         |
 | `DEBUG`                   | debug mode, only allowed 1(True)/0(False)        |
 | `SECRET_KEY`              | a secret key for the session cookie              |
@@ -86,4 +87,4 @@ ____
 + `Celery`
 + `Redis`
 + `gunicorn`
-+ `docker` and `docker compose`
++ `docker`

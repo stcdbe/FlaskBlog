@@ -4,7 +4,7 @@ from email.message import EmailMessage
 
 from celery import shared_task
 
-from src.config import env
+from src.config.enviroment import env
 
 
 class SMTPEmailSender:

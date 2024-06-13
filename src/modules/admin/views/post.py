@@ -1,4 +1,5 @@
 import logging
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +10,7 @@ from jinja2.runtime import Context
 from markupsafe import Markup
 from wtforms.validators import DataRequired, Length, Optional
 
-from src.config import env
+from src.config.enviroment import env
 from src.modules.post.models.entities import Post
 from src.modules.user.models.enums import UserStatus
 
@@ -23,7 +24,7 @@ class PostView(ModelView):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     def show_picture(self, context: Context, model: Post, name: str) -> Markup:
         return Markup(f'<img src="{model.picture}" width="200">')

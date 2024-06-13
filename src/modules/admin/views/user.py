@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import Any
 
 from flask import abort
@@ -19,7 +20,7 @@ class UserView(ModelView):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     def show_picture(self, context: Context, model: User, name: str) -> Markup:
         return Markup(f'<img src="{model.picture}" width="100">')
@@ -30,7 +31,7 @@ class UserView(ModelView):
     can_edit = False
     edit_modal = True
     column_descriptions = {
-        "status": "default - can leave comments; author - can create, update posts; admin - access to the admin panel"
+        "status": "default - can leave comments; author - can create, update posts; admin - access to the admin panel",
     }
     can_view_details = True
     details_modal = True

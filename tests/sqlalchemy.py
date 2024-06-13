@@ -3,7 +3,7 @@ from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
 from slugify import slugify
 
-from src.config import env
+from src.config.enviroment import env
 from src.modules.auth.utils.hasher.werkzeug import WerkzeugHasher
 from src.modules.post.models.entities import Post
 from src.modules.post.models.enums import PostCategory, PostGroup
@@ -26,7 +26,7 @@ def insert_test_data(db: SQLAlchemy) -> None:
         id=user_id,
         username="auth_username",
         email=env.TEST_EMAIL_RECEIVER,
-        password=WerkzeugHasher.get_psw_hash("Password123"),
+        password=WerkzeugHasher().get_psw_hash("Password123"),
         status=UserStatus.admin,
     )
 

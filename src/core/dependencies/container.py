@@ -55,7 +55,7 @@ class AppModule(Module):
         # Utils
         binder.bind(interface=SMTPEmailSender)
         binder.bind(interface=PictureManager)
-        binder.bind(interface=AbstractHasher, to=WerkzeugHasher)
+        binder.bind(interface=AbstractHasher, to=WerkzeugHasher())
 
         # Services
         binder.bind(interface=UserService)
@@ -69,7 +69,11 @@ class AppModule(Module):
         return SQLAlchemy(
             app=self.app,
             model_class=BaseModel,
-            session_options={"expire_on_commit": False},
+            session_options={
+                "expire_on_commit": False,
+                "autoflush": False,
+                "autocommit": False,
+            },
         )
 
     @provider

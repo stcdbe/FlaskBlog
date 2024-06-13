@@ -6,7 +6,7 @@ from typing import Literal
 from PIL import Image
 from werkzeug.datastructures import FileStorage
 
-from src.config import env
+from src.config.enviroment import env
 
 
 class PictureManager:
@@ -37,6 +37,6 @@ class PictureManager:
 
         abs_pic_path = self.generate_abs_pic_path(rel_pic_path=rel_pic_path)
         try:
-            Path.unlink(Path(abs_pic_path))
+            Path(abs_pic_path).unlink()
         except FileNotFoundError:
             logging.warning("Attempt to delete a non-existent file: %s", rel_pic_path)

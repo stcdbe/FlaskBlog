@@ -1,4 +1,4 @@
-{% extends 'basepost.html' %}
+{% extends 'basesite.html' %}
 
 {% block title %}
 <title>{% if ctg %}{{ ctg }} News{% else %}All News{% endif %}</title>
@@ -28,19 +28,18 @@
                     <div>
                         <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
                             <div class="d-flex flex-row align-items-center feed-text px-2">
-                                <img class="rounded-circle"
-                                     src="{{ post.creator.picture }}"
-                                     width="50">
+                                <img class="rounded-circle" src="{{ post.creator.picture }}" width="50">
                                 <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"><a
-                                        href="{{ url_for('users.get_user_profile', username=post.creator.username) }}">{{ post.creator.username
+                                            href="{{ url_for('users.get_user_profile', username=post.creator.username) }}">{{ post.creator.username
                       }}</a></span>
-                                    <span class="text-black-50 time">{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                                    <span
+                                        class="text-black-50 time">{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
                                 </div>
                             </div>
                             <div class="feed-icon px-2">
                                 <i class="fa fa-ellipsis-v text-black-50"></i>
                                 <a class="badge bg-secondary text-decoration-none link-light"
-                                   href="{{ url_for('posts.show_posts', post_group=post.group.value, category=post.category) }}">{{
+                                    href="{{ url_for('posts.show_posts', post_group=post.group.value, category=post.category) }}">{{
                                     post.category|capitalize
                                     }}</a>
                             </div>
@@ -51,23 +50,21 @@
                         </div>
                     </div>
                     <div class="feed-image p-2 px-3">
-                        <img class="img-fluid rounded"
-                             src="{{ post.picture }}"
-                             alt="post.username">
+                        <img class="img-fluid rounded" src="{{ post.picture }}" alt="post.username">
                     </div>
                     <div class="p-2 px-3">
-                        <span style="white-space: pre-wrap; word-wrap: break-word;">{% if post.intro %}{{ post.intro }}{% else %}{{ post.text }}{% endif %}</span>
+                        <span
+                            style="white-space: pre-wrap; word-wrap: break-word;">{% if post.intro %}{{ post.intro|e }}{% else %}{{ post.text|e }}{% endif %}</span>
                     </div>
                     <div class="d-flex justify-content-end socials p-2 py-3"><i class="fa fa-thumbs-up"></i><i
                             class="fa fa-comments-o"></i><i class="fa fa-share"></i>
                         {% if current_user.id == post.creator_id %}
                         <form>
                             <button type="submit" formaction="{{ url_for('posts.update_post', post_slug=post.slug) }}"
-                                    class="btn btn-sm btn-primary active">Update
+                                class="btn btn-sm btn-primary active">Update
                             </button>
                             <button type="submit" formaction="{{ url_for('posts.delete_post', post_slug=post.slug) }}"
-                                    formmethod="post"
-                                    class="btn btn-sm btn-danger">Delete
+                                formmethod="post" class="btn btn-sm btn-danger">Delete
                             </button>
                         </form>
                         {% endif %}
@@ -84,14 +81,14 @@
             {% if pagination.has_prev %}
             <li class="page-item">
                 <a class="page-link"
-                   href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=pagination.prev_num) }}">Previous</a>
+                    href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=pagination.prev_num) }}">Previous</a>
             </li>
             {% endif %}
             {% for page in pagination.iter_pages() %}
             {% if page %}
             {% if page != pagination.page %}
             <li class="page-item"><a class="page-link"
-                                     href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=page) }}">{{
+                    href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=page) }}">{{
                 page }}</a></li>
             {% else %}
             <li class="page-item disabled"><a class="page-link" href="">{{ page }}</a></li>
@@ -100,7 +97,7 @@
             {% endfor %}
             {% if pagination.has_next %}
             <li class="page-item"><a class="page-link"
-                                     href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=pagination.next_num) }}">Next</a>
+                    href="{{ url_for('posts.show_posts', post_group='news', category=current_category, page=pagination.next_num) }}">Next</a>
             </li>
             {% endif %}
         </ul>

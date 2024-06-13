@@ -1,3 +1,5 @@
+from http import HTTPMethod
+
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from injector import inject
@@ -5,7 +7,7 @@ from werkzeug.wrappers.response import Response
 
 from src.modules.auth.services.services import AuthService
 from src.modules.auth.views.wtforms import LoginForm, PasswordForgotForm, PasswordResetForm, RegistrationForm
-from src.modules.user.exceptions.exceptions import InvalidUserDataError
+from src.modules.user.exceptions import InvalidUserDataError
 
 auth_router = Blueprint(
     name="auth",
@@ -16,7 +18,7 @@ auth_router = Blueprint(
 )
 
 
-@auth_router.route(rule="/login", methods=("GET", "POST"))
+@auth_router.route(rule="/login", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @inject
 def login(auth_service: AuthService) -> Response | str:
     if current_user.is_authenticated:
@@ -36,7 +38,7 @@ def login(auth_service: AuthService) -> Response | str:
     return render_template("auth/login.html", form=form)
 
 
-@auth_router.route(rule="/registration", methods=("GET", "POST"))
+@auth_router.route(rule="/registration", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @inject
 def registration(auth_service: AuthService) -> Response | str:
     if current_user.is_authenticated:
@@ -64,7 +66,7 @@ def logout(auth_service: AuthService) -> Response:
     return redirect(url_for("main.show_main_page"))
 
 
-@auth_router.route(rule="/forgot_password", methods=("GET", "POST"))
+@auth_router.route(rule="/forgot_password", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @inject
 def forgot_password(auth_service: AuthService) -> Response | str:
     if current_user.is_authenticated:
@@ -85,7 +87,7 @@ def forgot_password(auth_service: AuthService) -> Response | str:
     return render_template("auth/forgot_password.html", form=form)
 
 
-@auth_router.route(rule="/reset_password/<token>", methods=("GET", "POST"))
+@auth_router.route(rule="/reset_password/<token>", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @inject
 def reset_password(auth_service: AuthService, token: str) -> Response | str:
     if current_user.is_authenticated:

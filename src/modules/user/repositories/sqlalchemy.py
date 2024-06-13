@@ -5,7 +5,7 @@ from sqlalchemy import desc, func, or_, select
 from sqlalchemy.exc import IntegrityError
 
 from src.core.repositories.sqlalchemy import SQLAlchemyRepository
-from src.modules.user.exceptions.exceptions import InvalidUsernameOrEmailError
+from src.modules.user.exceptions import InvalidUsernameOrEmailError
 from src.modules.user.models.entities import User
 from src.modules.user.repositories.base import AbstractUserRepository
 
@@ -13,7 +13,7 @@ from src.modules.user.repositories.base import AbstractUserRepository
 class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
     def count(self) -> int:
         stmt = select(func.count()).select_from(User)
-        res = self.db.session.execute(stmt)
+        res = self._db.session.execute(stmt)
         return res.scalars().one()
 
     def get_pgn(
@@ -32,7 +32,7 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
             else:
                 stmt = stmt.order_by(order_by)
 
-        return self.db.paginate(select=stmt, page=page, per_page=per_page)
+        return self._db.paginate(select=stmt, page=page, per_page=per_page)
 
     def get_one(self, username_or_email: str | None = None, **kwargs: Any) -> User | None:
         stmt = select(User).filter_by(**kwargs)
@@ -45,32 +45,32 @@ class SQLAlchemyUserRepository(AbstractUserRepository, SQLAlchemyRepository):
                 ),
             )
 
-        res = self.db.session.execute(stmt)
+        res = self._db.session.execute(stmt)
         return res.scalars().first()
 
     def create_one(self, user: User) -> User:
         try:
-            self.db.session.add(user)
-            self.db.session.commit()
+            self._db.session.add(user)
+            self._db.session.commit()
 
         except IntegrityError as exc:
-            self.db.session.rollback()
+            self._db.session.rollback()
             msg = "An account with such username or email already exists."
             raise InvalidUsernameOrEmailError(msg) from exc
 
         else:
-            self.db.session.refresh(user)
+            self._db.session.refresh(user)
             return user
 
     def update_one(self, user: User) -> User:
         try:
-            self.db.session.commit()
+            self._db.session.commit()
 
         except IntegrityError as exc:
-            self.db.session.rollback()
+            self._db.session.rollback()
             msg = "An account with such username or email already exists."
             raise InvalidUsernameOrEmailError(msg) from exc
 
         else:
-            self.db.session.refresh(user)
+            self._db.session.refresh(user)
             return user

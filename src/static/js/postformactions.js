@@ -8,16 +8,19 @@ function renderTextareaField() {
     textareaElement.id = "text";
     textareaElement.name = "text";
     textareaElement.rows = "10";
-    textareaElement.className="form-control";
-    if (group === 'articles') {
-        textareaElement.placeholder="5000 characters max";
-        textareaElement.maxlength="5000";
-    }
-    else if (group === 'news') {
-        textareaElement.placeholder="500 characters max";
-        textareaElement.maxlength="500";
+    textareaElement.className = "form-control";
+
+    switch (group) {
+        case 'articles':
+            textareaElement.placeholder = "5000 characters max";
+            textareaElement.maxlength = "5000";
+            break;
+        case 'news':
+            textareaElement.placeholder = "500 characters max";
+            textareaElement.maxlength = "500";
+            break;
     }
     textareaContainer.appendChild(textareaElement);
-}
+};
 
-renderTextareaField()
+renderTextareaField();

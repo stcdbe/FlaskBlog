@@ -1,14 +1,14 @@
 from collections.abc import Generator
 from io import BufferedReader
 from pathlib import Path
-from typing import Any
 
 import pytest
 from flask import Flask
-from flask.testing import FlaskClient, FlaskCliRunner
+from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 
-from src.config import TestSettings, env
+from src.config.enviroment import env
+from src.config.settings import TestSettings
 from src.main import create_app
 from tests.sqlalchemy import create_tables, drop_tables, insert_test_data
 from tests.utils import AuthActions
@@ -20,7 +20,7 @@ def app() -> Flask:
 
 
 @pytest.fixture(scope="session")
-def db(app: Flask) -> Generator[SQLAlchemy, Any, None]:
+def db(app: Flask) -> Generator[SQLAlchemy, None, None]:
     sqla_db = app.extensions["sqlalchemy"]
     with app.app_context():
         drop_tables(db=sqla_db)
@@ -32,14 +32,9 @@ def db(app: Flask) -> Generator[SQLAlchemy, Any, None]:
 
 
 @pytest.fixture(scope="session")
-def client(app: Flask) -> Generator[FlaskClient, Any, None]:
+def client(app: Flask) -> Generator[FlaskClient, None, None]:
     with app.test_client() as cli:
         yield cli
-
-
-@pytest.fixture(scope="session")
-def cli_runner(app: Flask) -> FlaskCliRunner:
-    return app.test_cli_runner()
 
 
 @pytest.fixture(scope="session")
@@ -48,7 +43,7 @@ def auth(client: FlaskClient) -> AuthActions:
 
 
 @pytest.fixture()
-def picture() -> Generator[BufferedReader, Any, None]:
+def picture() -> Generator[BufferedReader, None, None]:
     abs_test_pic_path = env.BASE_DIR / "tests" / "resources" / "test.jpeg"
     with Path.open(abs_test_pic_path, "rb") as file:
         yield file

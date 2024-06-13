@@ -1,10 +1,12 @@
+from http import HTTPMethod, HTTPStatus
+
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from injector import inject
 from werkzeug.wrappers.response import Response
 
 from src.modules.comment.services.services import CommentService
-from src.modules.post.exceptions.exceptions import InvalidPostDataError
+from src.modules.post.exceptions import InvalidPostDataError
 from src.modules.post.models.enums import PostCategory, PostGroup
 from src.modules.post.services.services import PostService
 from src.modules.post.views.wtforms import CommentCreateForm, PostCreateForm, PostUpdateForm
@@ -55,7 +57,7 @@ def show_posts(post_service: PostService) -> str:
     )
 
 
-@post_router.route(rule="/<post_slug>", methods=("GET", "POST"))
+@post_router.route(rule="/<post_slug>", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @inject
 def show_post_detail(
     post_service: PostService,
@@ -65,15 +67,15 @@ def show_post_detail(
     post = post_service.get_one(slug=post_slug)
 
     if not post:
-        abort(code=404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     form = CommentCreateForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:
-            abort(403)
+            abort(code=HTTPStatus.FORBIDDEN)
 
         if post.group != PostGroup.articles:
-            abort(404)
+            abort(code=HTTPStatus.NOT_FOUND)
 
         comment_service.create_one(
             post_id=post.id,
@@ -89,12 +91,12 @@ def show_post_detail(
     )
 
 
-@post_router.route(rule="/create", methods=("GET", "POST"))
+@post_router.route(rule="/create", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @login_required
 @inject
 def create_post(post_service: PostService) -> Response | str:
     if current_user.status not in {UserStatus.author, UserStatus.admin}:
-        abort(code=403)
+        abort(code=HTTPStatus.FORBIDDEN)
 
     form = PostCreateForm()
     if form.validate_on_submit():
@@ -110,17 +112,17 @@ def create_post(post_service: PostService) -> Response | str:
     return render_template("post/create_post.html", form=form)
 
 
-@post_router.route(rule="/<post_slug>/update", methods=("GET", "POST"))
+@post_router.route(rule="/<post_slug>/update", methods=(HTTPMethod.GET, HTTPMethod.POST))
 @login_required
 @inject
 def update_post(post_service: PostService, post_slug: str) -> Response | str:
     post = post_service.get_one(slug=post_slug)
 
     if not post:
-        abort(code=404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     if post.creator_id != current_user.id:
-        abort(code=403)
+        abort(code=HTTPStatus.FORBIDDEN)
 
     form = PostUpdateForm(group=post.group.name)
     if form.validate_on_submit():
@@ -143,10 +145,10 @@ def delete_post(post_service: PostService, post_slug: str) -> Response:
     post = post_service.get_one(slug=post_slug)
 
     if not post:
-        abort(code=404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     if post.creator_id != current_user.id:
-        abort(code=403)
+        abort(code=HTTPStatus.FORBIDDEN)
 
     post_service.del_one(post=post)
     return redirect(url_for("posts.show_posts", post_group=post.group.value))

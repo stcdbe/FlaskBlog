@@ -1,4 +1,4 @@
-{% extends 'basepost.html' %}
+{% extends 'basesite.html' %}
 
 {% block title %}
 <title>Create post</title>
@@ -11,7 +11,7 @@
             <h2>Create post</h2>
 
             <form method="post" action="{{ url_for('posts.create_post', post_group=post_group) }}"
-                  enctype="multipart/form-data">
+                enctype="multipart/form-data">
 
                 {{ form.hidden_tag() }}
 
@@ -28,7 +28,7 @@
 
                 <div class="form-group">
                     <label>{{ form.title.label }} <span class="require">*</span><small> (This field use in
-                        search and must be unique.)</small></label>
+                            search and must be unique.)</small></label>
                     {{ form.title(class="form-control", placeholder="100 characters max") }}
                 </div>
 

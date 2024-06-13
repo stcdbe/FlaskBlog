@@ -1,4 +1,4 @@
-{% extends 'basepost.html' %}
+{% extends 'basesite.html' %}
 
 {% block title %}
 <title>{{ post.title }}</title>
@@ -10,7 +10,7 @@
         <li><a href="{{ url_for('posts.show_posts', post_group='articles') }}" class="nav-link text-black">All</a></li>
         {% for ctg in categories %}
         <li><a href="{{ url_for('posts.show_posts', post_group='articles', category=category) }}"
-               class="nav-link text-black">{{
+                class="nav-link text-black">{{
             ctg|capitalize }}</a></li>
         {% endfor %}
     </nav>
@@ -24,33 +24,31 @@
             <article>
                 <header class="mb-4">
                     <div style="white-space: pre-wrap; word-wrap: break-word;">
-                        <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                        <h1 class="fw-bolder mb-1">{{ post.title|e }}</h1>
                     </div>
                     <div class="text-muted fst-italic mb-2">Posted on {{ post.created_at.strftime('%Y-%m-%d
                         %H:%M:%S') }}
                     </div>
                     <a class="badge bg-secondary text-decoration-none link-light"
-                       href="{{ url_for('posts.show_posts', post_group='articles', category=post.category.value) }}">{{
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=post.category.value) }}">{{
                         post.category|capitalize }}</a>
                 </header>
                 {% if post.intro %}
                 <div style="white-space: pre-wrap; word-wrap: break-word;">
-                    <p>{{ post.intro }}</p>
+                    <p>{{ post.intro|e }}</p>
                 </div>
                 {% endif %}
-                <figure class="mb-4"><img class="img-fluid rounded"
-                                          src="{{ post.picture }}"
-                                          alt="">
+                <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.picture }}" alt="">
                 </figure>
                 <section class="mb-5">
-                    <div style="white-space: pre-wrap; word-wrap: break-word;">{{ post.text }}</div>
+                    <div style="white-space: pre-wrap; word-wrap: break-word;">{{ post.text|e }}</div>
                     {% if current_user.id == post.creator_id %}
                     <form>
                         <button type="submit" formaction="{{ url_for('posts.update_post', post_slug=post.slug) }}"
-                                class="btn btn-sm btn-primary active">Update
+                            class="btn btn-sm btn-primary active">Update
                         </button>
                         <button type="submit" formaction="{{ url_for('posts.delete_post', post_slug=post.slug) }}"
-                                formmethod="post" class="btn btn-sm btn-danger">Delete
+                            formmethod="post" class="btn btn-sm btn-danger">Delete
                         </button>
                     </form>
                     {% endif %}
@@ -67,11 +65,11 @@
                         {% endfor %}
                         {% if current_user.is_authenticated %}
                         <form class="mb-4" method="post"
-                              action="{{ url_for('posts.show_post_detail', post_slug=post.slug) }}"
-                              enctype="multipart/form-data">
+                            action="{{ url_for('posts.show_post_detail', post_slug=post.slug) }}"
+                            enctype="multipart/form-data">
                             {{ form.hidden_tag() }}
                             <textarea id="text" name="text" rows="3" placeholder="250 characters max"
-                                      class="form-control" maxlength="250"></textarea>
+                                class="form-control" maxlength="250"></textarea>
                             <div class="container mt-3">
                                 {{ form.submit(class="btn btn-sm btn-primary active", value="Leave a comment") }}
                             </div>
@@ -89,16 +87,16 @@
                         {% if post.comments %}
                         {% for comment in post.comments %}
                         <div class="d-flex mt-4">
-                            <div class="flex-shrink-0"><img class="rounded-circle"
-                                                            src="{{ comment.creator.picture }}"
-                                                            width="50" alt="..."></div>
+                            <div class="flex-shrink-0"><img class="rounded-circle" src="{{ comment.creator.picture }}"
+                                    width="50" alt="..."></div>
                             <div class="ms-3">
                                 <div class="fw-bold">
-                                    <a href="{{ url_for('users.get_user_profile', username=comment.creator.username) }}">{{
+                                    <a
+                                        href="{{ url_for('users.get_user_profile', username=comment.creator.username) }}">{{
                                         comment.creator.username }}</a>
                                 </div>
                                 <div class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-                                <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ comment.text }}</div>
+                                <div style="white-space: pre-wrap; overflow-wrap: anywhere;">{{ comment.text|e }}</div>
                             </div>
                         </div>
                         {% endfor %}
@@ -113,9 +111,8 @@
                 <div class="card-header">Author</div>
                 <div class="card-body">
                     <div class="d-flex mt-4">
-                        <div class="flex-shrink-0"><img class="rounded-circle"
-                                                        src="{{ post.creator.picture }}"
-                                                        width="50" alt="post.creator.picture"></div>
+                        <div class="flex-shrink-0"><img class="rounded-circle" src="{{ post.creator.picture }}"
+                                width="50" alt="post.creator.picture"></div>
                         <div class="ms-3">
                             <b><a href="{{ url_for('users.get_user_profile', username=post.creator.username ) }}">{{
                                 post.creator.username }}</a></b>

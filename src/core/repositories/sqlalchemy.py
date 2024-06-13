@@ -3,8 +3,8 @@ from injector import inject
 
 
 class SQLAlchemyRepository:
-    db: SQLAlchemy
+    _db: SQLAlchemy
 
     @inject
     def __init__(self, db: SQLAlchemy) -> None:
-        self.db = db
+        self._db = db

@@ -1,4 +1,4 @@
-{% extends 'basepost.html' %}
+{% extends 'basesite.html' %}
 
 {% block title %}
 <title>{% if ctg %}{{ ctg }} Articles{% else %}All Articles{% endif %}</title>
@@ -10,7 +10,7 @@
         <li><a href="{{ url_for('posts.show_posts', post_group='articles') }}" class="nav-link text-black">All</a></li>
         {% for ctg in categories %}
         <li><a href="{{ url_for('posts.show_posts', post_group='articles', category=ctg) }}"
-               class="nav-link text-black">{{
+                class="nav-link text-black">{{
             ctg|capitalize }}</a></li>
         {% endfor %}
     </nav>
@@ -28,21 +28,22 @@
                     <div class="card shadow-sm">
                         <a href="{{ url_for('posts.show_post_detail', post_slug=article.slug) }}">
                             <img class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                 src="{{ article.picture }}">
+                                src="{{ article.picture }}">
                         </a>
                         <div class="card-body">
                             <h4><a href="{{ url_for('posts.show_post_detail', post_slug=article.slug) }}">{{
                                 article.title }}</a></h4>
                             <p><a class="badge bg-secondary text-decoration-none link-light"
-                                  href="{{ url_for('posts.show_posts', post_group='articles', category=article.category) }}">{{
+                                    href="{{ url_for('posts.show_posts', post_group='articles', category=article.category) }}">{{
                                 article.category|capitalize }}</a>
                             </p>
                             {% if article.intro %}
-                            <p class="card-text">{{ article.intro }}</p>
+                            <p class="card-text">{{ article.intro|e }}</p>
                             {% endif %}
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="{{ url_for('users.get_user_profile', username=article.creator.username) }}">{{
+                                    <a
+                                        href="{{ url_for('users.get_user_profile', username=article.creator.username) }}">{{
                                         article.creator.username
                                         }}</a>
                                 </div>
@@ -61,14 +62,14 @@
             <ul class="pagination">
                 {% if pagination.has_prev %}
                 <li class="page-item"><a class="page-link"
-                                         href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=pagination.prev_num) }}">Previous</a>
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=pagination.prev_num) }}">Previous</a>
                 </li>
                 {% endif %}
                 {% for page in pagination.iter_pages() %}
                 {% if page %}
                 {% if page != pagination.page %}
                 <li class="page-item"><a class="page-link"
-                                         href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=page) }}">{{
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=page) }}">{{
                     page }}</a></li>
                 {% else %}
                 <li class="page-item disabled"><a class="page-link" href="">{{ page }}</a></li>
@@ -77,7 +78,7 @@
                 {% endfor %}
                 {% if pagination.has_next %}
                 <li class="page-item"><a class="page-link"
-                                         href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=pagination.next_num) }}">Next</a>
+                        href="{{ url_for('posts.show_posts', post_group='articles', category=current_category, page=pagination.next_num) }}">Next</a>
                 </li>
                 {% endif %}
             </ul>

@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import Any
 
 from flask import abort
@@ -20,9 +21,9 @@ class DashboardView(AdminIndexView):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
-    @expose("/")
+    @expose(url="/")
     @inject
     def index(
         self,

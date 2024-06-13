@@ -4,10 +4,8 @@ from src.modules.auth.utils.hasher.base import AbstractHasher
 
 
 class WerkzeugHasher(AbstractHasher):
-    @staticmethod
-    def get_psw_hash(psw: str) -> str:
+    def get_psw_hash(self, psw: str) -> str:
         return generate_password_hash(password=psw)
 
-    @staticmethod
-    def verify_psw(psw_to_check: str, hashed_psw: str) -> bool:
+    def verify_psw(self, psw_to_check: str, hashed_psw: str) -> bool:
         return check_password_hash(pwhash=hashed_psw, password=psw_to_check)

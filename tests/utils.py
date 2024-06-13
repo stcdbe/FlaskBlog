@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
-from src.config import env
+from src.config.enviroment import env
 
 
 class AuthActions:

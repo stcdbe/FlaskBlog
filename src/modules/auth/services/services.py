@@ -8,10 +8,11 @@ from flask_login import login_user, logout_user
 from injector import inject
 from jwt import DecodeError, ExpiredSignatureError, InvalidTokenError
 
-from src.config import env
+from src.config.enviroment import env
 from src.core.utils.email.smtp import SMTPEmailSender
+from src.modules.auth.exceptions import InvalidJWTError
 from src.modules.auth.utils.hasher.base import AbstractHasher
-from src.modules.user.exceptions.exceptions import InvalidEmailError, InvalidJWTError, InvalidUsernameOrEmailError
+from src.modules.user.exceptions import InvalidEmailError, InvalidUsernameOrEmailError
 from src.modules.user.models.entities import User
 from src.modules.user.repositories.base import AbstractUserRepository
 

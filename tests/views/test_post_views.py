@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from io import BufferedReader
 
 from flask import Flask
@@ -13,7 +14,7 @@ from tests.utils import AuthActions
 
 def test_show_posts(client: FlaskClient) -> None:
     res_get = client.get("/posts")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/posts"
 
 
@@ -27,7 +28,7 @@ def test_create_post(
     auth.login()
 
     res_get = client.get("/posts/create")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/posts/create"
 
     data = {
@@ -39,7 +40,7 @@ def test_create_post(
         "picture": picture,
     }
     res_post = client.post("/posts/create", data=data, follow_redirects=True)
-    assert res_post.status_code == 200
+    assert res_post.status_code == HTTPStatus.OK
     assert len(res_post.history) == 1
     assert res_post.request.path == "/posts"
     data.pop("picture")
@@ -63,12 +64,12 @@ def test_show_post_detail(
         post = db.session.execute(stmt).scalars().one()
 
     res_get = client.get(f"/posts/{post.slug}")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == f"/posts/{post.slug}"
 
     com_data = {"text": "test_comment_text"}
     res_post = client.post(f"/posts/{post.slug}", data=com_data)
-    assert res_post.status_code == 200
+    assert res_post.status_code == HTTPStatus.OK
     assert res_post.request.path == f"/posts/{post.slug}"
     with app.app_context():
         stmt = select(Comment).where(Comment.text == com_data["text"])
@@ -90,7 +91,7 @@ def test_update_post(
         post = db.session.execute(stmt).scalars().one()
 
     res_get = client.get(f"/posts/{post.slug}/update")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == f"/posts/{post.slug}/update"
 
     data = {
@@ -101,7 +102,7 @@ def test_update_post(
         "picture": picture,
     }
     res_post = client.post(f"/posts/{post.slug}/update", data=data, follow_redirects=True)
-    assert res_post.status_code == 200
+    assert res_post.status_code == HTTPStatus.OK
     assert len(res_post.history) == 1
     assert res_post.request.path == "/posts"
     with app.app_context():
@@ -125,7 +126,7 @@ def test_delete_post(
         post = db.session.execute(stmt).scalars().one()
 
     res_post = client.post(f"/posts/{post.slug}/delete", follow_redirects=True)
-    assert res_post.status_code == 200
+    assert res_post.status_code == HTTPStatus.OK
     assert len(res_post.history) == 1
     assert res_post.request.path == "/posts"
     with app.app_context():
@@ -136,5 +137,5 @@ def test_delete_post(
 
 def test_search(client: FlaskClient) -> None:
     res_get = client.get("/posts/search")
-    assert res_get.status_code == 200
+    assert res_get.status_code == HTTPStatus.OK
     assert res_get.request.path == "/posts/search"

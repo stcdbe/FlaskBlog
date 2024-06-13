@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import Any
 
 from flask import abort
@@ -16,7 +17,7 @@ class CommentView(ModelView):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name: str, **kwargs: Any) -> None:
-        abort(404)
+        abort(code=HTTPStatus.NOT_FOUND)
 
     page_size = 12
     can_create = False

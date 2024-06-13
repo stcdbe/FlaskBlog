@@ -11,7 +11,3 @@ class InvalidEmailError(InvalidUserDataError):
 
 class InvalidUsernameOrEmailError(InvalidUserDataError):
     pass
-
-
-class InvalidJWTError(InvalidUserDataError):
-    pass

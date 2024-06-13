@@ -4,7 +4,7 @@ from flask import Flask, Response, get_flashed_messages, send_from_directory
 from flask_injector import FlaskInjector
 from injector import Injector
 
-from src.config import env
+from src.config.enviroment import env
 from src.core.dependencies.container import AppModule
 from src.core.workers.celery import celery_init_app
 from src.modules.auth.views.routes import auth_router

@@ -23,4 +23,7 @@ class Post(TimedBaseModel):
     category: Mapped[PostCategory]
     creator_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
     creator: Mapped["User"] = relationship(back_populates="posts")
-    comments: Mapped[list["Comment"]] = relationship(cascade="all, delete-orphan", order_by="Comment.created_at.desc()")
+    comments: Mapped[list["Comment"]] = relationship(
+        cascade="all, delete-orphan",
+        order_by="Comment.created_at.desc()",
+    )
